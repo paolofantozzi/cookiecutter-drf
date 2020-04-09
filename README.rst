@@ -10,6 +10,7 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
 * Postgres not in production mode (we assume that in production the database is managed externally)
 * Traefik managed as separated docker-compose with network defined as external for services
 * Bitbucket pipelines support
+* Makefile to run
 
 Following the original README.
 
