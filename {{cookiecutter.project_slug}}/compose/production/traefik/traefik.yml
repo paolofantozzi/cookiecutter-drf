@@ -5,15 +5,25 @@ entryPoints:
   web:
     # http
     address: ":80"
+  {%- if cookiecutter.ssl_mode != 'None' %}
 
   web-secure:
     # https
     address: ":443"
+  {%- endif %}
   {%- if cookiecutter.use_celery == 'y' %}
 
   flower:
     address: ":5555"
   {%- endif %}
+{%- if cookiecutter.ssl_mode == 'Static Certificate' %}
+
+tls:
+  certificates:
+    - certFile: "/certs/{{ cookiecutter.domain_name }}.crt.pem"
+      keyFile: "/certs/{{ cookiecutter.domain_name }}.key.pem"
+{%- endif %}
+{%- if cookiecutter.ssl_mode == 'Letsencrypt' %}
 
 certificatesResolvers:
   letsencrypt:
@@ -24,6 +34,7 @@ certificatesResolvers:
       # https://docs.traefik.io/master/https/acme/#httpchallenge
       httpChallenge:
         entryPoint: web
+{%- endif %}
 
 http:
   routers:
@@ -32,9 +43,12 @@ http:
       entryPoints:
         - web
       middlewares:
+        {%- if cookiecutter.ssl_mode != 'None' %}
         - redirect
+        {%- endif %}
         - csrf
       service: django
+    {%- if cookiecutter.ssl_mode != 'None' %}
 
     web-secure-router:
       rule: "Host(`{{ cookiecutter.domain_name }}`)"
@@ -43,9 +57,15 @@ http:
       middlewares:
         - csrf
       service: django
+      {%- if cookiecutter.ssl_mode == 'Static Certificate' %}
+      tls: {}
+      {%- endif %}
+      {%- if cookiecutter.ssl_mode == 'Letsencrypt' %}
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
+      {%- endif %}
+    {%- endif %}
     {%- if cookiecutter.use_celery == 'y' %}
 
     flower-secure-router:
@@ -59,11 +79,13 @@ http:
     {%- endif %}
 
   middlewares:
+    {%- if cookiecutter.ssl_mode != 'None' %}
     redirect:
       # https://docs.traefik.io/master/middlewares/redirectscheme/
       redirectScheme:
         scheme: https
         permanent: true
+    {%- endif %}
     csrf:
       # https://docs.traefik.io/master/middlewares/headers/#hostsproxyheaders
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax

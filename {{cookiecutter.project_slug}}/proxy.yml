@@ -13,6 +13,9 @@ services:
       - django
     volumes:
       - production_traefik:/etc/traefik/acme
+      {%- if cookiecutter.ssl_mode != 'None' %}
+      - ./compose/production/traefik/certs/:/certs/
+      {%- endif %}
     ports:
       - "0.0.0.0:80:80"
       - "0.0.0.0:443:443"

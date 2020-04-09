@@ -45,6 +45,11 @@
     "Other SMTP"
   ],
   "use_drf": "n",
+  "ssl_mode": [
+    "None",
+    "Letsencrypt",
+    "Static Certificate"
+  ],
   "custom_bootstrap_compilation": "n",
   "use_compressor": "n",
   "use_celery": "n",
@@ -56,7 +61,7 @@
     "None",
     "Travis",
     "Gitlab",
-    "Bitbucket""
+    "Bitbucket"
   ],
   "keep_local_envs_in_vcs": "y",
 
