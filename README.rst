@@ -1,24 +1,16 @@
 Cookiecutter Django
 =======================
 
-.. image:: https://travis-ci.org/pydanny/cookiecutter-django.svg?branch=master
-    :target: https://travis-ci.org/pydanny/cookiecutter-django?branch=master
+.. image:: https://travis-ci.org/paolofantozzi/cookiecutter-django.svg?branch=master
+    :target: https://travis-ci.org/paolofantozzi/cookiecutter-django?branch=master
     :alt: Build Status
 
-.. image:: https://pyup.io/repos/github/pydanny/cookiecutter-django/shield.svg
-    :target: https://pyup.io/repos/github/pydanny/cookiecutter-django/
-    :alt: Updates
+Forked from https://github.com/pydanny/cookiecutter-django with the following changes:
 
-.. image:: https://img.shields.io/badge/cookiecutter-Join%20on%20Slack-green?style=flat&logo=slack
-    :target: https://join.slack.com/t/cookie-cutter/shared_invite/enQtNzI0Mzg5NjE5Nzk5LTRlYWI2YTZhYmQ4YmU1Y2Q2NmE1ZjkwOGM0NDQyNTIwY2M4ZTgyNDVkNjMxMDdhZGI5ZGE5YmJjM2M3ODJlY2U
+* Postgres not in production mode (we assume that in production the database is managed externally)
+* Traefik managed as separated docker-compose with network defined as external for services
 
-.. image:: https://www.codetriage.com/pydanny/cookiecutter-django/badges/users.svg
-    :target: https://www.codetriage.com/pydanny/cookiecutter-django
-    :alt: Code Helpers Badge
-
-.. image:: https://img.shields.io/badge/code%20style-black-000000.svg
-    :target: https://github.com/ambv/black
-    :alt: Code style: black
+Following the original README.
 
 Powered by Cookiecutter_, Cookiecutter Django is a framework for jumpstarting
 production-ready Django projects quickly.
