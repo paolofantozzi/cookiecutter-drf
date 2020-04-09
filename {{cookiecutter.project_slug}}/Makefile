@@ -9,3 +9,6 @@ down:
 
 local:
 	docker-compose -f local.yml up --build
+
+migrations:
+	docker-compose -f local.yml -f local-migrations.yml up --build

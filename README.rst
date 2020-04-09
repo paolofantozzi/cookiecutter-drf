@@ -15,6 +15,7 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   * None -> no https support
   * LetsEncrypt -> certificate request and renewal automatically with letsencrypt
   * Static Cert -> use certicate provided (path compose/production/traefik/certs)
+* Make migrations command
 
 Following the original README.
 
