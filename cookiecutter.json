@@ -55,7 +55,8 @@
   "ci_tool": [
     "None",
     "Travis",
-    "Gitlab"
+    "Gitlab",
+    "Bitbucket""
   ],
   "keep_local_envs_in_vcs": "y",
 
