@@ -303,6 +303,7 @@ def remove_storages_module():
 def remove_static_certs():
     shutil.rmtree(os.path.join("compose", "production", "traefik", "certs"))
 
+
 def main():
     debug = "{{ cookiecutter.debug }}".lower() == "y"
 
