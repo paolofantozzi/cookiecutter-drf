@@ -7,15 +7,15 @@ Cookiecutter Django
 
 Forked from https://github.com/pydanny/cookiecutter-django with the following changes:
 
-* Postgres not in production mode (we assume that in production the database is managed externally)
-* Traefik managed as separated docker-compose with network defined as external for services
-* Bitbucket pipelines support
-* Makefile to run
-* Ssl mode:
-  * None -> no https support
-  * LetsEncrypt -> certificate request and renewal automatically with letsencrypt
-  * Static Cert -> use certicate provided (path compose/production/traefik/certs)
-* Make migrations command
+- Postgres not in production mode (we assume that in production the database is managed externally)
+- Traefik managed as separated docker-compose with network defined as external for services
+- Bitbucket pipelines support
+- Makefile to run
+- Ssl mode:
+  - None -> no https support
+  - LetsEncrypt -> certificate request and renewal automatically with letsencrypt
+  - Static Cert -> use certicate provided (path compose/production/traefik/certs)
+- Make migrations command
 
 Following the original README.
 
