@@ -38,24 +38,38 @@ certificatesResolvers:
 
 http:
   routers:
+    {%- if cookiecutter.api_only_mode == 'y' %}
+    api-router:
+    {%- else %}
     web-router:
-      rule: "Host(`{{ cookiecutter.domain_name }}`)"
+    {%- endif %}
+      rule: "Host(`{{ cookiecutter.domain_name }}`){% if cookiecutter.api_only_mode == 'y' %} && PathPrefix(`/api`){% endif %}"
       entryPoints:
         - web
+      {%- if cookiecutter.api_only_mode == 'n' or cookiecutter.ssl_mode != 'None'%}
       middlewares:
         {%- if cookiecutter.ssl_mode != 'None' %}
         - redirect
         {%- endif %}
+        {%- if cookiecutter.api_only_mode == 'n' %}
         - csrf
+        {%- endif %}
+      {%- endif %}
       service: django
     {%- if cookiecutter.ssl_mode != 'None' %}
 
+    {%- if cookiecutter.api_only_mode == 'y' %}
+    api-secure-router:
+    {%- else %}
     web-secure-router:
-      rule: "Host(`{{ cookiecutter.domain_name }}`)"
+    {%- endif %}
+      rule: "Host(`{{ cookiecutter.domain_name }}`){% if cookiecutter.api_only_mode == 'y' %} && PathPrefix(`/api`){% endif %}"
       entryPoints:
         - web-secure
+      {%- if cookiecutter.api_only_mode == 'n' %}
       middlewares:
         - csrf
+      {%- endif %}
       service: django
       {%- if cookiecutter.ssl_mode == 'Static Certificate' %}
       tls: {}
@@ -77,6 +91,34 @@ http:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
     {%- endif %}
+    {%- if cookiecutter.api_only_mode == 'y' %}
+
+    frontend-router:
+      rule: "Host(`{{ cookiecutter.domain_name }}`)"
+      entryPoints:
+        - web
+      {%- if cookiecutter.ssl_mode != 'None' %}
+      middlewares:
+        - redirect
+      {%- endif %}
+      service: frontend
+    {%- if cookiecutter.ssl_mode != 'None' %}
+
+    frontend-secure-router:
+      rule: "Host(`{{ cookiecutter.domain_name }}`)"
+      entryPoints:
+        - web-secure
+      service: frontend
+      {%- if cookiecutter.ssl_mode == 'Static Certificate' %}
+      tls: {}
+      {%- endif %}
+      {%- if cookiecutter.ssl_mode == 'Letsencrypt' %}
+      tls:
+        # https://docs.traefik.io/master/routing/routers/#certresolver
+        certResolver: letsencrypt
+      {%- endif %}
+    {%- endif %}
+    {%- endif %}
 
   middlewares:
     {%- if cookiecutter.ssl_mode != 'None' %}
@@ -86,17 +128,26 @@ http:
         scheme: https
         permanent: true
     {%- endif %}
+    {%- if cookiecutter.api_only_mode == 'n' %}
     csrf:
       # https://docs.traefik.io/master/middlewares/headers/#hostsproxyheaders
       # https://docs.djangoproject.com/en/dev/ref/csrf/#ajax
       headers:
         hostsProxyHeaders: ["X-CSRFToken"]
+    {%- endif %}
 
   services:
     django:
       loadBalancer:
         servers:
           - url: http://django:5000
+    {%- if cookiecutter.api_only_mode == 'y' %}
+
+    frontend:
+      loadBalancer:
+        servers:
+          - url: !!!SET FRONTEND_URL!!!
+    {%- endif %}
     {%- if cookiecutter.use_celery == 'y' %}
 
     flower:

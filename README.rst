@@ -16,6 +16,10 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - LetsEncrypt -> certificate request and renewal automatically with letsencrypt
   - Static Cert -> use certicate provided (path compose/production/traefik/certs)
 - Make migrations command
+- Api only mode:
+  - Activated by default (together with drf)
+  - Assume a different external system in traefik for frontend
+  - Assume the entry point in traefik in /api
 
 Following the original README.
 

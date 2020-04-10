@@ -70,6 +70,15 @@ if (
     sys.exit(1)
 
 if (
+    "{{ cookiecutter.use_drf }}".lower() == "n"
+    and "{{ cookiecutter.api_only_mode }}".lower() == "y"
+):
+    print(
+        "You can't use api only mode without drf"
+    )
+    sys.exit(1)
+
+if (
     "{{ cookiecutter.cloud_provider }}" == "GCP"
     and "{{ cookiecutter.mail_service }}" == "Amazon SES"
 ) or (

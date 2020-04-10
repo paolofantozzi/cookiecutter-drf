@@ -44,7 +44,7 @@
     "SparkPost",
     "Other SMTP"
   ],
-  "use_drf": "n",
+  "use_drf": "y",
   "ssl_mode": [
     "None",
     "Letsencrypt",
@@ -64,6 +64,7 @@
     "Bitbucket"
   ],
   "keep_local_envs_in_vcs": "y",
+  "api_only_mode": "y",
 
   "debug": "n"
 }
