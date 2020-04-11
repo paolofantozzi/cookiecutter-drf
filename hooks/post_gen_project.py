@@ -383,7 +383,7 @@ def main():
     if "{{ cookiecutter.use_drf }}".lower() == "n":
         remove_drf_starter_files()
 
-    if "{{ cookiecutter.ssl_mode }}".lower() == "static certificate":
+    if "{{ cookiecutter.ssl_mode }}".lower() != "static certificate":
         remove_static_certs()
 
     print(SUCCESS + "Project initialized, keep up the good work!" + TERMINATOR)
