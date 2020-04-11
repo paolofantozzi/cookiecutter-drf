@@ -73,9 +73,7 @@ if (
     "{{ cookiecutter.use_drf }}".lower() == "n"
     and "{{ cookiecutter.api_only_mode }}".lower() == "y"
 ):
-    print(
-        "You can't use api only mode without drf"
-    )
+    print("You can't use api only mode without drf")
     sys.exit(1)
 
 if (
