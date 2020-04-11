@@ -74,7 +74,12 @@ SUPPORTED_COMBINATIONS = [
     {"cloud_provider": "GCP", "mail_service": "Other SMTP"},
     # Note: cloud_providers GCP and None with mail_service Amazon SES is not supported
     {"use_drf": "y"},
-    {"use_drf": "n"},
+    {"use_drf": "n", "api_only_mode": "n"},
+    # Note: api_only_mode not supported without drf
+    {"use_drf": "y", "api_only_mode": "y"},
+    {"ssl_mode": "None"},
+    {"ssl_mode": "Letsencrypt"},
+    {"ssl_mode": "Static Certificate"},
     {"js_task_runner": "None"},
     {"js_task_runner": "Gulp"},
     {"custom_bootstrap_compilation": "y"},
@@ -94,6 +99,7 @@ SUPPORTED_COMBINATIONS = [
     {"ci_tool": "None"},
     {"ci_tool": "Travis"},
     {"ci_tool": "Gitlab"},
+    {"ci_tool": "Bitbucket"},
     {"keep_local_envs_in_vcs": "y"},
     {"keep_local_envs_in_vcs": "n"},
     {"debug": "y"},
