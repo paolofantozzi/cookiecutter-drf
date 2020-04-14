@@ -87,5 +87,13 @@ CELERY_TASK_ALWAYS_EAGER = True
 CELERY_TASK_EAGER_PROPAGATES = True
 
 {%- endif %}
+{% if cookiecutter.api_only_mode == 'y' -%}
+INSTALLED_APPS += ['corsheaders']  # noqa F405
+
+MIDDLEWARE = ['corsheaders.middleware.CorsMiddleware'] + MIDDLEWARE  # noqa F405
+
+CORS_ORIGIN_ALLOW_ALL = True
+
+{%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------

@@ -10,16 +10,20 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
 - Postgres not in production mode (we assume that in production the database is managed externally)
 - Traefik managed as separated docker-compose with network defined as external for services
 - Bitbucket pipelines support
+- Removed black style and add wemake-python-styleguide as default
 - Makefile to run
 - Ssl mode:
+
   - None -> no https support
   - LetsEncrypt -> certificate request and renewal automatically with letsencrypt
   - Static Cert -> use certicate provided (path compose/production/traefik/certs)
 - Make migrations command
 - Api only mode:
+
   - Activated by default (together with drf)
   - Assume a different external system in traefik for frontend
   - Assume the entry point in traefik in /api
+  - CORS allow all default in local
 
 Following the original README.
 
