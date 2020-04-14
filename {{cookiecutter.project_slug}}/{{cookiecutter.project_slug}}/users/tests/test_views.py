@@ -6,7 +6,8 @@ import pytest
 from django.test import RequestFactory
 
 from {{ cookiecutter.project_slug }}.users.models import User
-from {{ cookiecutter.project_slug }}.users.views import UserRedirectView, UserUpdateView
+from {{ cookiecutter.project_slug }}.users.views import UserRedirectView
+from {{ cookiecutter.project_slug }}.users.views import UserUpdateView
 
 pytestmark = pytest.mark.django_db
 

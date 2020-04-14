@@ -110,7 +110,7 @@ UNSUPPORTED_COMBINATIONS = [
     {"cloud_provider": "None", "use_whitenoise": "n"},
     {"cloud_provider": "GCP", "mail_service": "Amazon SES"},
     {"cloud_provider": "None", "mail_service": "Amazon SES"},
-    {"drf": "n", "api_only_mode": "y"},
+    {"use_drf": "n", "api_only_mode": "y"},
 ]
 
 
@@ -164,6 +164,17 @@ def test_flake8_passes(cookies, context_override):
         sh.flake8(str(result.project))
     except sh.ErrorReturnCode as e:
         pytest.fail(e.stdout.decode())
+
+
+# @pytest.mark.parametrize("context_override", SUPPORTED_COMBINATIONS, ids=_fixture_id)
+# def test_black_passes(cookies, context_override):
+#     """Generated project should pass black."""
+#     result = cookies.bake(extra_context=context_override)
+#
+#     try:
+#         sh.black("--check", "--diff", "--exclude", "migrations", f"{result.project}/")
+#     except sh.ErrorReturnCode as e:
+#         pytest.fail(e.stdout.decode())
 
 
 def test_travis_invokes_pytest(cookies, context):

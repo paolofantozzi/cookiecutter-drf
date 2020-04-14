@@ -3,7 +3,8 @@
 """Tests for users' urls."""
 
 import pytest
-from django.urls import resolve, reverse
+from django.urls import resolve
+from django.urls import reverse
 
 from {{ cookiecutter.project_slug }}.users.models import User
 
