@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Tests for users' tasks."""
+
 import pytest
 from celery.result import EagerResult
 

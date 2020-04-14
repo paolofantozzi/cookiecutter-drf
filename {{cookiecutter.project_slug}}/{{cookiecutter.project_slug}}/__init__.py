@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Project version info."""
+
 __version__ = "{{ cookiecutter.version }}"
 __version_info__ = tuple(
     [

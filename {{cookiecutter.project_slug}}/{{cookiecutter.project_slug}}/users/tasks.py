@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Celery task for users."""
+
 from django.contrib.auth import get_user_model
 
 from config import celery_app

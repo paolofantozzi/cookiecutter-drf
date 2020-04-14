@@ -1,7 +1,14 @@
-from typing import Any, Sequence
+# -*- coding: utf-8 -*-
+
+"""User factory."""
+
+from typing import Any
+from typing import Sequence
 
 from django.contrib.auth import get_user_model
-from factory import DjangoModelFactory, Faker, post_generation
+from factory import DjangoModelFactory
+from factory import Faker
+from factory import post_generation
 
 
 class UserFactory(DjangoModelFactory):

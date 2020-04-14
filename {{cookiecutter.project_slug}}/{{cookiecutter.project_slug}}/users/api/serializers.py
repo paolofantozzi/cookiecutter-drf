@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Serializers for users."""
+
 from rest_framework import serializers
 
 from {{ cookiecutter.project_slug }}.users.models import User

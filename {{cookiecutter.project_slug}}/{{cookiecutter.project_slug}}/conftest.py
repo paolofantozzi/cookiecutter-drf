@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Testing settings."""
+
 import pytest
 
 from {{ cookiecutter.project_slug }}.users.models import User

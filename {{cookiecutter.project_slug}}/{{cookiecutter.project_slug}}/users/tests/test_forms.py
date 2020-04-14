@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Tests for users' forms."""
+
 import pytest
 
 from {{ cookiecutter.project_slug }}.users.forms import UserCreationForm

@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Tests for users' views."""
+
 import pytest
 from django.test import RequestFactory
 

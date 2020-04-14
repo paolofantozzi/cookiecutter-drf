@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Urls for users."""
+
 from django.urls import path
 
 from {{ cookiecutter.project_slug }}.users.views import (

@@ -1,3 +1,7 @@
+# -*- coding: utf-8 -*-
+
+"""Adapters for users."""
+
 from typing import Any
 
 from allauth.account.adapter import DefaultAccountAdapter

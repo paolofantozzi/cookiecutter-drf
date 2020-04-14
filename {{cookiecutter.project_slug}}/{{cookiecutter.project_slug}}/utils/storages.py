@@ -1,4 +1,8 @@
-{% if cookiecutter.cloud_provider == 'AWS' -%}
+# -*- coding: utf-8 -*-
+
+"""Storage settings."""
+
+{%- if cookiecutter.cloud_provider == 'AWS' -%}
 from storages.backends.s3boto3 import S3Boto3Storage
 
 
