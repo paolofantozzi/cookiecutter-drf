@@ -55,7 +55,9 @@ WSGI_APPLICATION = "config.wsgi.application"
 DJANGO_APPS = [
     "django.contrib.auth",
     "django.contrib.contenttypes",
+{%- if cookiecutter.api_only_mode == 'n' %}
     "django.contrib.sessions",
+{%- endif %}
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
@@ -75,6 +77,10 @@ THIRD_PARTY_APPS = [
 {%- endif %}
 {%- if cookiecutter.use_drf == "y" %}
     "rest_framework",
+{%- endif %}
+{%- if cookiecutter.api_only_mode == 'y' %}
+    'rest_framework_simplejwt',
+{%- else %}
     "rest_framework.authtoken",
 {%- endif %}
 ]
@@ -133,12 +139,14 @@ MIDDLEWARE = [
 {%- if cookiecutter.use_whitenoise == 'y' %}
     "whitenoise.middleware.WhiteNoiseMiddleware",
 {%- endif %}
-    "django.contrib.sessions.middleware.SessionMiddleware",
-    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.CommonMiddleware",
+{%- if cookiecutter.api_only_mode == 'n' %}
+    "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
     "django.contrib.auth.middleware.AuthenticationMiddleware",
     "django.contrib.messages.middleware.MessageMiddleware",
+{%- endif %}
+    "django.middleware.locale.LocaleMiddleware",
     "django.middleware.common.BrokenLinkEmailsMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
 ]
@@ -313,7 +321,11 @@ STATICFILES_FINDERS += ["compressor.finders.CompressorFinder"]
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": (
         "rest_framework.authentication.SessionAuthentication",
+    {%- if cookiecutter.api_only_mode == 'y' %}
+        'rest_framework_simplejwt.authentication.JWTAuthentication'
+    {%- else %}
         "rest_framework.authentication.TokenAuthentication",
+    {%- endif %}
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
 }

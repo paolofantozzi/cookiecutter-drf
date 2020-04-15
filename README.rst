@@ -25,6 +25,7 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - Assume a different external system in traefik for frontend
   - Assume the entry point in traefik in /api
   - CORS allow all default in local
+  - JWT as default authentication
 
 Following the original README.
 
