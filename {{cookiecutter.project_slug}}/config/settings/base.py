@@ -157,7 +157,11 @@ MIDDLEWARE = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-root
 STATIC_ROOT = str(ROOT_DIR / "staticfiles")
 # https://docs.djangoproject.com/en/dev/ref/settings/#static-url
+{%- if cookiecutter.api_only_mode == 'y' %}
+STATIC_URL = "/api/static/"
+{%- else %}
 STATIC_URL = "/static/"
+{%- endif %}
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#std:setting-STATICFILES_DIRS
 STATICFILES_DIRS = [str(APPS_DIR / "static")]
 # https://docs.djangoproject.com/en/dev/ref/contrib/staticfiles/#staticfiles-finders
@@ -171,7 +175,12 @@ STATICFILES_FINDERS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-root
 MEDIA_ROOT = str(APPS_DIR / "media")
 # https://docs.djangoproject.com/en/dev/ref/settings/#media-url
+{%- if cookiecutter.api_only_mode == 'y' %}
+MEDIA_URL = "/api/media/"
+{%- else %}
 MEDIA_URL = "/media/"
+{%- endif %}
+
 
 # TEMPLATES
 # ------------------------------------------------------------------------------
