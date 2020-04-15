@@ -80,6 +80,7 @@ THIRD_PARTY_APPS = [
 {%- endif %}
 {%- if cookiecutter.api_only_mode == 'y' %}
     'rest_framework_simplejwt',
+    'drf_yasg',
 {%- else %}
     "rest_framework.authtoken",
 {%- endif %}

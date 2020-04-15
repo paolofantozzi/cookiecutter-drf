@@ -7,13 +7,44 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import include
 from django.urls import path
+{%- if cookiecutter.api_only_mode == 'y' %}
+from django.urls import re_path
+{%- endif %}
 from django.views import defaults as default_views
 from django.views.generic import TemplateView
+{%- if cookiecutter.api_only_mode == 'y' %}
+from drf_yasg import openapi
+from drf_yasg.views import get_schema_view
+from rest_framework import permissions
+{%- endif %}
 {%- if cookiecutter.use_drf == 'y' %}
 from rest_framework.authtoken.views import obtain_auth_token
 {%- endif %}
+{%- if cookiecutter.api_only_mode == 'y' %}
+
+schema_view = get_schema_view(
+    openapi.Info(
+        title='{{cookiecutter.project_name}} API',
+        default_version='v1',
+        description='All the possible interactions with {{cookiecutter.project_slug}}.',
+        terms_of_service='https://www.google.com/policies/terms/',
+        contact=openapi.Contact(email='info@{{cookiecutter.domain_name}}'),
+        license=openapi.License(name='{{cookiecutter.open_source_license}}'),
+    ),
+    public=True,
+    permission_classes=(permissions.AllowAny,),
+)
+{%- endif %}
 
 urlpatterns = [
+{%- if cookiecutter.api_only_mode == 'y' %}
+    re_path(r'^api/swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
+    path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
+    path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
+{%- endif %}
+]
+
+urlpatterns += [
     path('', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     path(
         'about/', TemplateView.as_view(template_name='pages/about.html'), name='about'

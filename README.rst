@@ -26,6 +26,7 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - Assume the entry point in traefik in /api
   - CORS allow all default in local
   - JWT as default authentication
+  - Swagger automatically visualized for each API
 
 Following the original README.
 
