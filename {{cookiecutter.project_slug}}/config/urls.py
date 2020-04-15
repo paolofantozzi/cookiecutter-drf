@@ -4,18 +4,21 @@
 
 from django.conf import settings
 from django.conf.urls.static import static
+{%- if cookiecutter.api_only_mode == 'n' %}
 from django.contrib import admin
+{%- endif %}
 from django.urls import include
 from django.urls import path
 {%- if cookiecutter.api_only_mode == 'y' %}
 from django.urls import re_path
 {%- endif %}
 from django.views import defaults as default_views
-from django.views.generic import TemplateView
 {%- if cookiecutter.api_only_mode == 'y' %}
 from drf_yasg import openapi
 from drf_yasg.views import get_schema_view
 from rest_framework import permissions
+{%- else %}
+from django.views.generic import TemplateView
 {%- endif %}
 {%- if cookiecutter.use_drf == 'y' %}
 from rest_framework.authtoken.views import obtain_auth_token
@@ -45,12 +48,14 @@ urlpatterns = [
 ]
 
 urlpatterns += [
+    {%- if cookiecutter.api_only_mode == 'n' %}
     path('', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     path(
         'about/', TemplateView.as_view(template_name='pages/about.html'), name='about'
     ),
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
+    {%- endif %}
     # User management
     path('users/', include('{{ cookiecutter.project_slug }}.users.urls', namespace='users')),
     path('accounts/', include('allauth.urls')),

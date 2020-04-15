@@ -57,12 +57,12 @@ DJANGO_APPS = [
     "django.contrib.contenttypes",
 {%- if cookiecutter.api_only_mode == 'n' %}
     "django.contrib.sessions",
+    "django.contrib.admin",
 {%- endif %}
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
     # "django.contrib.humanize", # Handy template tags
-    "django.contrib.admin",
     "django.forms",
     'localflavor',
 ]
