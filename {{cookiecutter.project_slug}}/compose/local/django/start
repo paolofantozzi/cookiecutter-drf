@@ -4,8 +4,9 @@ set -o errexit
 set -o pipefail
 set -o nounset
 
+MAKEMIGRATIONS=${DJANGO_MAKEMIGRATIONS:-}
 
-if [[ -z $DJANGO_MAKEMIGRATIONS ]]; then
+if [[ -z ${MAKEMIGRATIONS} ]]; then
     echo "Makemigrations skipped"
 else
     python manage.py makemigrations
