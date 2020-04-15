@@ -11,6 +11,7 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
 - Traefik managed as separated docker-compose with network defined as external for services
 - Bitbucket pipelines support
 - Removed black style and add wemake-python-styleguide as default
+- Django filter included as default
 - Makefile to run
 - Ssl mode:
 
