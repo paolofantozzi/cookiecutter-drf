@@ -6,7 +6,9 @@ from datetime import datetime
 
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField
+{%- if cookiecutter.api_only_mode == 'n' %}
 from django.urls import reverse
+{%- endif %}
 from django.utils.translation import ugettext_lazy as _
 {%- if cookiecutter.api_only_mode == 'y' %}
 from rest_framework_simplejwt.settings import api_settings
