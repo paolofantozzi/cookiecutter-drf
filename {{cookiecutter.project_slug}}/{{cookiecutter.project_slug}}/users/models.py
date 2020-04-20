@@ -2,10 +2,16 @@
 
 """Models for users."""
 
+from datetime import datetime
+
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
+{%- if cookiecutter.api_only_mode == 'y' %}
+from rest_framework_simplejwt.settings import api_settings
+from rest_framework_simplejwt.tokens import RefreshToken
+{%- endif %}
 
 
 class User(AbstractUser):
@@ -13,6 +19,51 @@ class User(AbstractUser):
     # First Name and Last Name do not cover name patterns
     # around the globe.
     name = CharField(_("Name of User"), blank=True, max_length=255)
+    {%- if cookiecutter.api_only_mode == 'y' %}
+
+    def get_jwt_access_token(self):
+        """Return the current jwt access token."""
+        try:
+            return self.jwt_access_token
+        except AttributeError:
+            self._obtain_jwt_tokens()
+            return self.jwt_access_token
+
+    def get_jwt_refresh_token(self):
+        """Return the current jwt refresh token."""
+        try:
+            return self.jwt_refresh_token
+        except AttributeError:
+            self._obtain_jwt_tokens()
+            return self.jwt_refresh_token
+
+    def get_jwt_access_token_expiring_time(self):
+        """Return the current jwt refresh token."""
+        try:
+            return self.access_token_expiring_time
+        except AttributeError:
+            self._obtain_jwt_tokens()
+            return self.access_token_expiring_time
+
+    def get_jwt_refresh_token_expiring_time(self):
+        """Return the current jwt refresh token."""
+        try:
+            return self.refresh_token_expiring_time
+        except AttributeError:
+            self._obtain_jwt_tokens()
+            return self.refresh_token_expiring_time
+
+    def _obtain_jwt_tokens(self):
+        access_lifetime = api_settings.ACCESS_TOKEN_LIFETIME
+        refresh_lifetime = api_settings.REFRESH_TOKEN_LIFETIME
+        refresh = RefreshToken.for_user(self)
+        now = datetime.now()
+        self.jwt_access_token = str(refresh.access_token)
+        self.jwt_refresh_token = str(refresh)
+        self.access_token_expiring_time = now + access_lifetime
+        self.refresh_token_expiring_time = now + refresh_lifetime
+    {%- else %}
 
     def get_absolute_url(self):
         return reverse("users:detail", kwargs={"username": self.username})
+    {%- endif %}

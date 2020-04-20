@@ -304,6 +304,7 @@ def remove_drf_starter_files():
 
 def remove_api_only_starter_files():
     os.remove(os.path.join("{{cookiecutter.project_slug}}", "users", "serializers.py"))
+    os.remove(os.path.join("{{cookiecutter.project_slug}}", "users", "tests", "test_login.py"))
 
 
 def remove_gui_starter_files():
