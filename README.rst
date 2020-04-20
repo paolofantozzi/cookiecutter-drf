@@ -27,6 +27,7 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - CORS allow all default in local
   - JWT as default authentication
   - Swagger automatically visualized for each API
+  - JWT token methods in model
 
 Following the original README.
 
