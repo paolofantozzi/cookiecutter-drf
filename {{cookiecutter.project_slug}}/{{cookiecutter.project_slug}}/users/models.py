@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
 """Models for users."""
+{%- if cookiecutter.api_only_mode == 'y' %}
 
 from datetime import datetime
+{%- endif %}
 
 from django.contrib.auth.models import AbstractUser
 from django.db.models import CharField
