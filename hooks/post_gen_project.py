@@ -302,6 +302,17 @@ def remove_drf_starter_files():
     shutil.rmtree(os.path.join("{{cookiecutter.project_slug}}", "users", "api"))
 
 
+def remove_api_only_starter_files():
+    os.remove(os.path.join("{{cookiecutter.project_slug}}", "users", "serializers.py"))
+
+
+def remove_gui_starter_files():
+    for name in {"adapters.py", "admin.py", "forms.py"}:
+        os.remove(os.path.join("{{cookiecutter.project_slug}}", "users", name))
+    for name in {"test_forms.py", "test_models.py", "test_urls.py", "test_views.py"}:
+        os.remove(os.path.join("{{cookiecutter.project_slug}}", "users", "tests", name))
+
+
 def remove_storages_module():
     os.remove(os.path.join("{{cookiecutter.project_slug}}", "utils", "storages.py"))
 
@@ -386,8 +397,14 @@ def main():
     if "{{ cookiecutter.ci_tool }}".lower() != "bitbucket":
         remove_bitbucketpipelinesyml_file()
 
-    if "{{ cookiecutter.use_drf }}".lower() == "n":
+    if "{{ cookiecutter.api_only_mode }}".lower() == "y":
         remove_drf_starter_files()
+        remove_gui_starter_files()
+    elif "{{ cookiecutter.use_drf }}".lower() == "y":
+        remove_api_only_starter_files()
+    else:
+        remove_drf_starter_files()
+        remove_api_only_starter_files()
 
     if (
         "{{ cookiecutter.ssl_mode }}".lower() != "static certificate"
