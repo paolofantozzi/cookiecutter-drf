@@ -20,7 +20,7 @@ from rest_framework import permissions
 {%- else %}
 from django.views.generic import TemplateView
 {%- endif %}
-{%- if cookiecutter.use_drf == 'y' %}
+{%- if cookiecutter.use_drf == 'y' and cookiecutter.api_only_mode == 'n' %}
 from rest_framework.authtoken.views import obtain_auth_token
 {%- endif %}
 {%- if cookiecutter.api_only_mode == 'y' %}
@@ -40,36 +40,29 @@ schema_view = get_schema_view(
 {%- endif %}
 
 urlpatterns = [
-{%- if cookiecutter.api_only_mode == 'y' %}
+    {%- if cookiecutter.api_only_mode == 'y' %}
     re_path(r'^api/swagger(?P<format>\.json|\.yaml)$', schema_view.without_ui(cache_timeout=0), name='schema-json'),
     path('api/swagger/', schema_view.with_ui('swagger', cache_timeout=0), name='schema-swagger-ui'),
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='schema-redoc'),
-{%- endif %}
-]
-
-urlpatterns += [
-    {%- if cookiecutter.api_only_mode == 'n' %}
+    path('api/users/', include('{{ cookiecutter.project_slug }}.users.urls', namespace='users')),
+    {%- elif cookiecutter.use_drf == 'y' %}
+    # API base url
+    path('api/', include('config.api_router')),
+    # DRF auth token
+    path('auth-token/', obtain_auth_token),
+    {%- else %}
     path('', TemplateView.as_view(template_name='pages/home.html'), name='home'),
     path(
         'about/', TemplateView.as_view(template_name='pages/about.html'), name='about'
     ),
     # Django Admin, use {% raw %}{% url 'admin:index' %}{% endraw %}
     path(settings.ADMIN_URL, admin.site.urls),
-    {%- endif %}
     # User management
     path('users/', include('{{ cookiecutter.project_slug }}.users.urls', namespace='users')),
     path('accounts/', include('allauth.urls')),
+    {%- endif %}
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-{% if cookiecutter.use_drf == 'y' -%}
-# API URLS
-urlpatterns += [
-    # API base url
-    path('api/', include('config.api_router')),
-    # DRF auth token
-    path('auth-token/', obtain_auth_token),
-]
-{%- endif %}
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
