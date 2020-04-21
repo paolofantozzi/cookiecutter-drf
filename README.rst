@@ -28,6 +28,11 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - email validated
   - codice fiscale (italian social security number)
 
+- Added migration with default super user:
+
+  - user: :code:`admin`
+  - psw: :code:`changeme`
+
 - Api only mode:
 
   - Activated by default (together with drf)
