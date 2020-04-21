@@ -1,17 +1,37 @@
 # -*- coding: utf-8 -*-
 
 """Views for users."""
+{%- if cookiecutter.api_only_mode == 'y' %}
+
+from typing import List
+from typing import Type
+
+from django.shortcuts import get_object_or_404
+from rest_framework import mixins
+from rest_framework import permissions
+from rest_framework import viewsets
+from rest_framework.permissions import BasePermission
+{%- else %}
 
 from django.contrib import messages
-from django.contrib.auth import get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.urls import reverse
 from django.utils.translation import ugettext_lazy as _
 from django.views.generic import DetailView
 from django.views.generic import RedirectView
 from django.views.generic import UpdateView
+{%- endif %}
 
-User = get_user_model()
+from {{ cookiecutter.project_slug }}.users.models import User
+{%- if cookiecutter.api_only_mode == 'y' %}
+from {{ cookiecutter.project_slug }}.users.permissions import IsStaffOrIsMe
+from {{ cookiecutter.project_slug }}.users.serializers import UserRegistrationSerializer
+from {{ cookiecutter.project_slug }}.users.serializers import UserSerializer
+from {{ cookiecutter.project_slug }}.users.serializers import UserUpdateSerializer
+{%- endif %}
+
+
+{%- if cookiecutter.api_only_mode == 'n' %}
 
 
 class UserDetailView(LoginRequiredMixin, DetailView):
@@ -54,3 +74,57 @@ class UserRedirectView(LoginRequiredMixin, RedirectView):
 
 
 user_redirect_view = UserRedirectView.as_view()
+{%- else %}
+
+
+class UserViewSet(
+    mixins.CreateModelMixin,
+    mixins.UpdateModelMixin,
+    mixins.ListModelMixin,
+    mixins.RetrieveModelMixin,
+    viewsets.GenericViewSet,
+):
+    """
+    Create, Update, List and retrieve users.
+
+    When an id is request it is possible to use `me` instead of an id,
+    to return self.
+    """
+
+    def get_queryset(self):
+        """Return all the users if is staff, self otherwise."""
+        if getattr(self, 'swagger_fake_view', False):  # noqa: WPS425
+            # Queryset just for schema generation metadata
+            return User.objects.none()
+        if self.request.user.is_staff:
+            return User.objects.all()
+        return User.objects.filter(pk=self.request.user.pk)
+
+    def get_object(self):
+        """Return the user requested if it is staff or self, 404 otherwise."""
+        pk = self.kwargs['pk']
+        if pk == 'me':
+            pk = self.request.user.pk
+        queryset = self.get_queryset()
+        user = get_object_or_404(queryset, pk=pk)
+        self.check_object_permissions(self.request, user)
+        return user
+
+    def get_serializer_class(self):
+        """Return detailed serializer only for retrieve."""
+        if self.action in {'update', 'partial_update'}:  # type: ignore  # mypy plugin bug
+            return UserUpdateSerializer
+        elif self.action == 'create':  # type: ignore
+            return UserRegistrationSerializer
+        return UserSerializer
+
+    def get_permissions(self):
+        """Instantiates and returns the list of permissions that this view requires."""
+        permission_classes: List[Type[BasePermission]] = []
+        if self.action == 'create':  # type: ignore
+            permission_classes = [permissions.AllowAny]
+        else:
+            permission_classes = [permissions.IsAuthenticated, IsStaffOrIsMe]
+        return [permission() for permission in permission_classes]
+
+{%- endif %}
