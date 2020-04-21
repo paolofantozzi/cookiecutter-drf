@@ -7,7 +7,7 @@ from datetime import datetime
 {%- endif %}
 
 from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField
+from django.db import models
 {%- if cookiecutter.api_only_mode == 'n' %}
 from django.urls import reverse
 {%- endif %}
@@ -22,7 +22,12 @@ class User(AbstractUser):
 
     # First Name and Last Name do not cover name patterns
     # around the globe.
-    name = CharField(_("Name of User"), blank=True, max_length=255)
+    name = models.CharField(_("Name of User"), blank=True, max_length=255)
+    is_privacy_accepted = models.BooleanField(default=False)
+    is_email_validated = models.BooleanField(default=False)
+
+    # Field for identification in Italy
+    cf = models.CharField(help_text=_('Codice Fiscale'), max_length=32)
     {%- if cookiecutter.api_only_mode == 'y' %}
 
     def get_jwt_access_token(self):

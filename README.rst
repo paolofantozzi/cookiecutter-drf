@@ -18,9 +18,16 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - None -> no https support
   - LetsEncrypt -> certificate request and renewal automatically with letsencrypt
   - Static Cert -> use certicate provided (path compose/production/traefik/certs)
+
 - Make migrations command
 - Added local testing script
 - Added migrations generation script from default project :code:`tests/generate_migrations.sh`. Migrations will be located in :code:`.cache/docker/my_awesome_project`
+- User model new fields:
+
+  - privacy accepted
+  - email validated
+  - codice fiscale (italian social security number)
+
 - Api only mode:
 
   - Activated by default (together with drf)
