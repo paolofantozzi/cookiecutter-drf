@@ -116,6 +116,7 @@ Listed in alphabetical order.
   Emanuel Calso            `@bloodpet`_                  @bloodpet
   Eraldo Energy            `@eraldo`_
   Eric Groom               `@ericgroom`_
+  Ernesto Cedeno           `@codnee`_
   Eyad Al Sibai            `@eyadsibai`_
   Felipe Arruda            `@arruda`_
   Florian Idelberger       `@step21`_                    @windrush
@@ -201,6 +202,7 @@ Listed in alphabetical order.
   Sascha                   `@saschalalala`_             @saschalalala
   Shupeyko Nikita          `@webyneter`_
   Sławek Ehlert            `@slafs`_
+  Sorasful                 `@sorasful`_
   Srinivas Nyayapati       `@shireenrao`_
   stepmr                   `@stepmr`_
   Steve Steiner            `@ssteinerX`_
@@ -271,6 +273,7 @@ Listed in alphabetical order.
 .. _@chuckus: https://github.com/chuckus
 .. _@cmackenzie1: https://github.com/cmackenzie1
 .. _@cmargieson: https://github.com/cmargieson
+.. _@codnee: https://github.com/codnee
 .. _@cole: https://github.com/cole
 .. _@Collederas: https://github.com/Collederas
 .. _@curtisstpierre: https://github.com/curtisstpierre
@@ -374,6 +377,7 @@ Listed in alphabetical order.
 .. _@siauPatrick: https://github.com/siauPatrick
 .. _@sladinji: https://github.com/sladinji
 .. _@slafs: https://github.com/slafs
+.. _@sorasful:: https://github.com/sorasful
 .. _@ssteinerX: https://github.com/ssteinerx
 .. _@step21: https://github.com/step21
 .. _@stepmr: https://github.com/stepmr

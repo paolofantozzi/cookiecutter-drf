@@ -50,6 +50,7 @@
     "Letsencrypt",
     "Static Certificate"
   ],
+  "use_async": "n",
   "custom_bootstrap_compilation": "n",
   "use_compressor": "n",
   "use_celery": "n",

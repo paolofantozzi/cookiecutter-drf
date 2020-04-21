@@ -7,6 +7,9 @@ from django.conf.urls.static import static
 {%- if cookiecutter.api_only_mode == 'n' %}
 from django.contrib import admin
 {%- endif %}
+{%- if cookiecutter.use_async == 'y' %}
+from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+{%- endif %}
 from django.urls import include
 from django.urls import path
 {%- if cookiecutter.api_only_mode == 'y' %}
@@ -63,6 +66,12 @@ urlpatterns = [
     {%- endif %}
     # Your stuff: custom urls includes go here
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+{%- if cookiecutter.use_async == 'y' %}
+if settings.DEBUG:
+    # Static file serving when using Gunicorn + Uvicorn for local web socket development
+    urlpatterns += staticfiles_urlpatterns()
+{%- endif %}
 
 if settings.DEBUG:
     # This allows the error pages to be debugged during development, just visit
