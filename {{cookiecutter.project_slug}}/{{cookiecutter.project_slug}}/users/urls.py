@@ -19,7 +19,7 @@ from {{ cookiecutter.project_slug }}.users.views import user_update_view
 app_name = "users"
 urlpatterns = [
     {%- if cookiecutter.api_only_mode == 'y' %}
-    path('login/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('login/', TokenObtainPairView.as_view(), name='login'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     {%- else %}
     path("~redirect/", view=user_redirect_view, name="redirect"),
