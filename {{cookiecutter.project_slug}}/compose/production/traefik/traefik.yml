@@ -87,9 +87,14 @@ http:
       entryPoints:
         - flower
       service: flower
+      {%- if cookiecutter.ssl_mode == 'Static Certificate' %}
+      tls: {}
+      {%- endif %}
+      {%- if cookiecutter.ssl_mode == 'Letsencrypt' %}
       tls:
         # https://docs.traefik.io/master/routing/routers/#certresolver
         certResolver: letsencrypt
+      {%- endif %}
     {%- endif %}
     {%- if cookiecutter.api_only_mode == 'y' %}
 

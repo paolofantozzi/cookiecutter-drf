@@ -9,11 +9,9 @@ services:
       context: .
       dockerfile: ./compose/production/traefik/Dockerfile
     image: {{ cookiecutter.project_slug }}_production_traefik
-    depends_on:
-      - django
     volumes:
       - production_traefik:/etc/traefik/acme
-      {%- if cookiecutter.ssl_mode != 'None' %}
+      {%- if cookiecutter.ssl_mode == 'Static' %}
       - ./compose/production/traefik/certs/:/certs/
       {%- endif %}
     ports:
@@ -22,7 +20,8 @@ services:
       {%- if cookiecutter.use_celery == 'y' %}
       - "0.0.0.0:5555:5555"
       {%- endif %}
+    networks:
+      - {{ cookiecutter.project_slug }}_network
 
 networks:
-  default:
-    name: {{ cookiecutter.project_slug }}_network
+  {{ cookiecutter.project_slug }}_network:
