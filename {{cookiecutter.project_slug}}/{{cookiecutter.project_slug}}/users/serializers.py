@@ -35,7 +35,7 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, data_sent):
         """Check if the data sent are valid."""
-        cf = data_sent.get('cf', '')
+        cf = data_sent.get('cf', '').upper()
         if len(cf) != 16:  # length of a standard cf
             raise serializers.ValidationError({
                 'cf': ['Not valid cf. It should have 16 characters.'],
