@@ -20,6 +20,12 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - Static Cert -> use certicate provided (path compose/production/traefik/certs)
 
 - Make migrations command
+- Added pgadmin4 container in local:
+
+  - port: 5050
+  - user: email defined in configuration
+  - psw: admin
+
 - Added local testing script
 - Added migrations generation script from default project :code:`tests/generate_migrations.sh`. Migrations will be located in :code:`.cache/docker/my_awesome_project`
 - User model new fields:
