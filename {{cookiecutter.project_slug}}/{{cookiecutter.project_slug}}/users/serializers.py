@@ -23,6 +23,7 @@ class UserSerializer(serializers.ModelSerializer):
             'name',
             'first_name',
             'last_name',
+            'cf',
             'is_privacy_accepted',
             'is_email_validated',
         )
@@ -34,14 +35,19 @@ class UserSerializer(serializers.ModelSerializer):
 
     def validate(self, data_sent):
         """Check if the data sent are valid."""
+        cf = data_sent.get('cf', '')
+        if len(cf) != 16:  # length of a standard cf
+            raise serializers.ValidationError({
+                'cf': ['Not valid cf. It should have 16 characters.'],
+            })
         try:
-            ssn_validation(data_sent.get('cf', ''))
+            ssn_validation(cf)
         except ValueError:
             raise serializers.ValidationError({
                 'cf': ['Not valid cf'],
             })
 
-        if User.objects.filter(cf=data_sent['cf']).exists():
+        if User.objects.filter(cf=cf).exists():
             raise serializers.ValidationError({
                 'cf': ['User with this cf already exists.'],
             })
@@ -68,7 +74,7 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         }
 
 
-class UserRegistrationSerializer(serializers.ModelSerializer):
+class UserRegistrationSerializer(UserSerializer):
     """Serializer for user regitration."""
 
     class Meta:
