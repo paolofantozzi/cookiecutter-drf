@@ -14,4 +14,4 @@ pipelines:
               variables:
                 SSH_USER: ''
                 SERVER: ''
-                COMMAND: 'cd {{cookiecutter.project_slug}} && git pull && make down && make prod'
+                COMMAND: 'cd {{cookiecutter.project_slug | replace("_","-")}} && git pull && make down && make prod'

@@ -1,4 +1,4 @@
-version: '3'
+version: '3.5'
 
 services:
   django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
@@ -12,22 +12,6 @@ services:
       - ./.envs/.production/.django
       - ./.envs/.production/.postgres
     command: /start
-
-  traefik:
-    build:
-      context: .
-      dockerfile: ./compose/production/traefik/Dockerfile
-    image: {{ cookiecutter.project_slug }}_production_traefik
-    depends_on:
-      - django
-    volumes:
-      - production_traefik:/etc/traefik/acme
-    ports:
-      - "0.0.0.0:80:80"
-      - "0.0.0.0:443:443"
-      {%- if cookiecutter.use_celery == 'y' %}
-      - "0.0.0.0:5555:5555"
-      {%- endif %}
 
   redis:
     image: redis:5.0
@@ -63,5 +47,5 @@ services:
 
 networks:
   default:
-    name: {{ cookiecutter.project_slug }}_network
+    name: {{ cookiecutter.project_slug | replace("_","-") }}_proxy_network
     external: true

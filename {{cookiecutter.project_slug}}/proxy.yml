@@ -21,7 +21,7 @@ services:
       - "0.0.0.0:5555:5555"
       {%- endif %}
     networks:
-      - {{ cookiecutter.project_slug }}_network
+      - proxy_network
 
 networks:
-  {{ cookiecutter.project_slug }}_network:
+  proxy_network:
