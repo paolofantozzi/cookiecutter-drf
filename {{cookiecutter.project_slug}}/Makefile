@@ -12,3 +12,10 @@ local:
 
 migrations:
 	docker-compose -f local.yml -f local-migrations.yml up --build
+
+reset-local:
+	docker-compose -f local.yml down -v
+
+test:
+	docker-compose -f local.yml -f local-test.yml run --rm django pytest
+	docker-compose -f local.yml -f local-test.yml run django mypy {{ cookiecutter.project_slug }}
