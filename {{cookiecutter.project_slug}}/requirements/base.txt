@@ -41,4 +41,5 @@ djangorestframework==3.11.0  # https://github.com/encode/django-rest-framework
 {%- if cookiecutter.api_only_mode == "y" %}
 djangorestframework-simplejwt==4.4.0  # https://github.com/SimpleJWT/django-rest-framework-simplejwt
 drf-yasg==1.17.1  # https://github.com/axnsan12/drf-yasg
+drf-extensions==0.6.0  # https://github.com/chibisov/drf-extensions
 {%- endif %}
