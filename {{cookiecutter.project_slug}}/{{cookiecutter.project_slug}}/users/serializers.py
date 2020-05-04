@@ -2,8 +2,11 @@
 
 """Serializers for users."""
 
+from django.utils.text import gettext_lazy as _
 from localflavor.it.util import ssn_validation
 from rest_framework import serializers
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework_simplejwt.tokens import TokenError
 
 from {{ cookiecutter.project_slug }}.users.models import User
 
@@ -125,3 +128,31 @@ class UserLoginSerializer(UserRegistrationSerializer):
         extra_kwargs = {
             key: vl for key, vl in UserRegistrationSerializer.Meta.extra_kwargs.items() if key not in login_fields
         }
+
+
+class LogoutSerializer(serializers.Serializer):
+    """Serializer for logout action.
+
+    Originally developed by orehush (https://gist.github.com/orehush/667c79b28fdc94f86746bd15694d1167).
+    """
+
+    refresh = serializers.CharField()
+
+    default_error_messages = {
+        'bad_token': _('Token is invalid or expired'),
+    }
+
+    def validate(self, data_sent):
+        """Validate refresh token passed."""
+        try:
+            RefreshToken(data_sent['refresh'])
+        except TokenError:
+            raise serializers.ValidationError({
+                'refresh': ['Refresh token not valid or expired.'],
+            })
+
+        return super().validate(data_sent)
+
+    def save(self):
+        """Put in blacklist the refresh token."""
+        RefreshToken(self.validated_data['refresh']).blacklist()

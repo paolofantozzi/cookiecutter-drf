@@ -9,8 +9,11 @@ from typing import Type
 from django.shortcuts import get_object_or_404
 from rest_framework import mixins
 from rest_framework import permissions
+from rest_framework import status
 from rest_framework import viewsets
+from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import BasePermission
+from rest_framework.response import Response
 {%- else %}
 
 from django.contrib import messages
@@ -25,6 +28,7 @@ from django.views.generic import UpdateView
 from {{ cookiecutter.project_slug }}.users.models import User
 {%- if cookiecutter.api_only_mode == 'y' %}
 from {{ cookiecutter.project_slug }}.users.permissions import IsStaffOrIsMe
+from {{ cookiecutter.project_slug }}.users.serializers import LogoutSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserRegistrationSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserUpdateSerializer
@@ -126,5 +130,22 @@ class UserViewSet(
         else:
             permission_classes = [permissions.IsAuthenticated, IsStaffOrIsMe]
         return [permission() for permission in permission_classes]
+
+
+class LogoutView(GenericAPIView):
+    """Logout view.
+
+    Originally developed by orehush (https://gist.github.com/orehush/667c79b28fdc94f86746bd15694d1167).
+    """
+
+    serializer_class = LogoutSerializer
+    permission_classes = (permissions.IsAuthenticated, )
+
+    def post(self, request, *args):
+        """Take refresh token and blacklist it."""
+        serializer = self.get_serializer(data=request.data)
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 {%- endif %}

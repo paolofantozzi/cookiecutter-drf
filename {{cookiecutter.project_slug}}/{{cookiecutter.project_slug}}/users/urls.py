@@ -8,6 +8,8 @@ from rest_framework.routers import DefaultRouter
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.views import TokenRefreshView
 
+
+from {{ cookiecutter.project_slug }}.users.views import LogoutView
 from {{ cookiecutter.project_slug }}.users.views import UserViewSet
 {%- else %}
 
@@ -20,6 +22,7 @@ app_name = "users"
 urlpatterns = [
     {%- if cookiecutter.api_only_mode == 'y' %}
     path('login/', TokenObtainPairView.as_view(), name='login'),
+    path('logout/', LogoutView.as_view(), name='logout'),
     path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
     {%- else %}
     path("~redirect/", view=user_redirect_view, name="redirect"),
