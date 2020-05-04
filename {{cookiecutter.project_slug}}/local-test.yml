@@ -1,0 +1,13 @@
+version: '3'
+
+volumes:
+  local_postgres_data_test: {}
+  local_postgres_data_backups_test: {}
+
+services:
+
+  postgres:
+    image: {{ cookiecutter.project_slug }}_production_postgres
+    volumes:
+      - local_postgres_data_test:/var/lib/postgresql/data
+      - local_postgres_data_backups_test:/backups

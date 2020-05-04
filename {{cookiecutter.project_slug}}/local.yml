@@ -16,6 +16,10 @@ services:
       {%- if cookiecutter.use_mailhog == 'y' %}
       - mailhog
       {%- endif %}
+      {%- if cookiecutter.use_celery == 'y' %}
+      - celeryworker
+      - celerybeat
+      {%- endif %}
     volumes:
       - .:/app
     env_file:

@@ -18,6 +18,7 @@ def user() -> User:
     return UserFactory()
 {%- if cookiecutter.use_whitenoise == 'y' %}
 
+
 @pytest.fixture(autouse=True)
 def whitenoise_autorefresh(settings):
     """

@@ -318,7 +318,9 @@ def remove_api_only_starter_files():
         os.path.join("{{cookiecutter.project_slug}}", "users", "tests", "test_login.py")
     )
     os.remove(
-        os.path.join("{{cookiecutter.project_slug}}", "users", "tests", "test_logout.py")
+        os.path.join(
+            "{{cookiecutter.project_slug}}", "users", "tests", "test_logout.py"
+        )
     )
 
 

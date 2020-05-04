@@ -8,7 +8,7 @@ from rest_framework.test import APITestCase
 from {{ cookiecutter.project_slug }}.users.models import User
 
 
-class TestLogoutCase(APITestCase):
+class TestLoginCase(APITestCase):
     """Test cases for logout."""
 
     login_url = reverse('users:login')

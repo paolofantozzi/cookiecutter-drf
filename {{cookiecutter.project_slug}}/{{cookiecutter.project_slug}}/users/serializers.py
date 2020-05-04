@@ -2,7 +2,6 @@
 
 """Serializers for users."""
 
-from django.utils.text import gettext_lazy as _
 from localflavor.it.util import ssn_validation
 from rest_framework import serializers
 from rest_framework_simplejwt.tokens import RefreshToken
@@ -139,7 +138,7 @@ class LogoutSerializer(serializers.Serializer):
     refresh = serializers.CharField()
 
     default_error_messages = {
-        'bad_token': _('Token is invalid or expired'),
+        'bad_token': 'Token is invalid or expired',
     }
 
     def validate(self, data_sent):
