@@ -74,11 +74,11 @@ class TestLoginCase(APITestCase):
         self.assertEqual(r.status_code, 401, body)
         self.assertEqual(body['code'], 'token_not_valid', body)
 
-    def test_not_authenticated_request_return_code_403(self):
+    def test_not_authenticated_request_return_code_401(self):
         """Test return code for not authenticated."""
         r = self.client.get(self.my_profile_url)
         body = r.json()
-        self.assertEqual(r.status_code, 403, body)
+        self.assertEqual(r.status_code, 401, body)
 
     def test_authenticated_request_return_code_200(self):
         """Test return code for authenticated."""

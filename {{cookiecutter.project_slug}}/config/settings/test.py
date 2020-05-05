@@ -40,8 +40,8 @@ TEMPLATES[-1]["OPTIONS"]["loaders"] = [  # type: ignore[index] # noqa F405
     )
 ]
 {%- else %}
-REST_FRAMEWORK['TEST_REQUEST_DEFAULT_FORMAT'] = 'json'  # type: ignore
-REST_FRAMEWORK['TEST_REQUEST_RENDERER_CLASSES'] = [  # type: ignore
+REST_FRAMEWORK['TEST_REQUEST_DEFAULT_FORMAT'] = 'json'
+REST_FRAMEWORK['TEST_REQUEST_RENDERER_CLASSES'] = [
     'rest_framework.renderers.JSONRenderer',
 ]
 {%- endif %}

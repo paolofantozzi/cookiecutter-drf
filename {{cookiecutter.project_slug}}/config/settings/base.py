@@ -343,6 +343,7 @@ REST_FRAMEWORK = {
     {%- endif %}
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
+    'EXCEPTION_HANDLER': 'config.utils.error_code_exception_handler',
 }
 {%- endif %}
 # Your stuff...
