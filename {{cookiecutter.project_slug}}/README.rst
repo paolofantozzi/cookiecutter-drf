@@ -21,6 +21,40 @@ Moved to settings_.
 Basic Commands
 --------------
 
+{%- if cookiecutter.use_docker == "y" %}
+Managing
+^^^^^^^^
+
+* Running in local::
+
+    $ make local
+
+* Create migrations in local::
+
+    $ make migrations
+
+* Factory reset data and containers in local::
+
+    $ make reset-local
+
+* Perform tests in local::
+
+    $ make test
+
+* Start in production mode::
+
+    $ make prod
+
+* Start proxy in production mode::
+
+    $ make prod-proxy
+
+* Stop system running in production mode::
+
+    $ make down
+
+{%- endif %}
+
 Setting Up Your Users
 ^^^^^^^^^^^^^^^^^^^^^
 
