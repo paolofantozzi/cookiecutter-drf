@@ -5,25 +5,28 @@
 from typing import Any
 from typing import Sequence
 
-from django.contrib.auth import get_user_model
 from factory import DjangoModelFactory
 from factory import Faker
 from factory import post_generation
 
+from ..models import User
+
 
 class UserFactory(DjangoModelFactory):
+    """Factory for users."""
 
-    username = Faker("user_name")
-    email = Faker("email")
-    name = Faker("name")
+    username = Faker('user_name')
+    email = Faker('email')
+    name = Faker('name')
 
     @post_generation
     def password(self, create: bool, extracted: Sequence[Any], **kwargs):
+        """Fake password generator."""
         password = (
             extracted
             if extracted
             else Faker(
-                "password",
+                'password',
                 length=42,
                 special_chars=True,
                 digits=True,
@@ -34,5 +37,7 @@ class UserFactory(DjangoModelFactory):
         self.set_password(password)
 
     class Meta:
-        model = get_user_model()
-        django_get_or_create = ["username"]
+        """Metadata for the factory."""
+
+        model = User
+        django_get_or_create = ['username']

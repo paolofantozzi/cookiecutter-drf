@@ -8,62 +8,68 @@ Originally developed by orehush (https://gist.github.com/orehush/667c79b28fdc94f
 from functools import partial
 
 from rest_framework.reverse import reverse
-from rest_framework.test import APITestCase
 from rest_framework_simplejwt.exceptions import TokenError
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from {{ cookiecutter.project_slug }}.users.models import User
+from .base import UsersBaseTest
 
 
-class TestLogoutCase(APITestCase):
+class TestLogoutCase(UsersBaseTest):
     """Test cases for logout.
 
     Originally developed by orehush (https://gist.github.com/orehush/667c79b28fdc94f86746bd15694d1167).
     """
 
-    login_url = reverse('users:login')
-    refresh_token_url = reverse('users:token_refresh')
-    logout_url = reverse('users:logout')
-
-    username = 'test'
-    password = 'kah2ie3urh4k'
-
     def setUp(self):
-        """Create a test user."""
-        self.user = User.objects.create_user(username=self.username, password=self.password)
+        """Reverse used urls."""
+        super().setUp()
+        self.login_url = reverse('users:login')
+        self.refresh_token_url = reverse('users:token_refresh')
+        self.logout_url = reverse('users:logout')
 
-    def _login(self):
-        data = {
-            'username': self.username,
-            'password': self.password,
-        }
-        r = self.client.post(self.login_url, data)
-        body = r.json()
-        if 'access' in body:
-            self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(body['access']))
-        return r.status_code, body
+    def test_logout_need_authentication(self):
+        """Test logout needs to be authenticated."""
+        req = self.client.post(self.login_url, self.login_post_data)
+        body = req.json()
+        req = self.client.post(self.logout_url, {'refresh': body['refresh']})
+        body = req.json()
+        self.assertEqual(req.status_code, 401, body)
+        self.assertEqual(body['code'], 'not_authenticated', body)
 
-    def test_logout_response_204(self):
-        """Test return code 204 for logout."""
-        _, body = self._login()
-        data = {'refresh': body['refresh']}
-        r = self.client.post(self.logout_url, data)
-        body = r.content
-        self.assertEqual(r.status_code, 204, body)
-        self.assertFalse(body, body)
+    def test_logout_response_200(self):
+        """Test return code 200 for logout."""
+        req = self.client.post(self.login_url, self.login_post_data)
+        body = req.json()
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(body['access']))
+        req = self.client.post(self.logout_url, {'refresh': body['refresh']})
+        body = req.json()
+        self.assertEqual(req.status_code, 200, body)
 
     def test_logout_with_bad_refresh_token_response_400(self):
         """Test return code 400 for bad refresh token."""
-        self._login()
-        data = {'refresh': 'dsf.sdfsdf.sdf'}
-        r = self.client.post(self.logout_url, data)
-        body = r.json()
-        self.assertEqual(r.status_code, 400, body)
-        self.assertTrue(body, body)
+        req = self.client.post(self.login_url, self.login_post_data)
+        body = req.json()
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(body['access']))
+        req = self.client.post(self.logout_url, {'refresh': 'dsf.sdfsdf.sdf'})
+        body = req.json()
+        self.assertEqual(req.status_code, 400, body)
 
     def test_logout_refresh_token_in_blacklist(self):
         """Test exception for using blacklisted refresh token."""
-        _, body = self._login()
-        self.client.post(self.logout_url, body)
+        req = self.client.post(self.login_url, self.login_post_data)
+        body = req.json()
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(body['access']))
+        self.client.post(self.logout_url, {'refresh': body['refresh']})
         token = partial(RefreshToken, body['refresh'])
         self.assertRaises(TokenError, token)
+
+    def test_refresh_token_in_blacklist(self):
+        """Test refresh token in blacklist."""
+        req = self.client.post(self.login_url, self.login_post_data)
+        body = req.json()
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format(body['access']))
+        self.client.post(self.logout_url, {'refresh': body['refresh']})
+        req = self.client.post(self.refresh_token_url, {'refresh': body['refresh']})
+        body = req.json()
+        self.assertEqual(req.status_code, 401, body)
+        self.assertEqual(body['code'], 'token_not_valid', body)
