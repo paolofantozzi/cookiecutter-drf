@@ -135,7 +135,7 @@ class LogoutSerializer(serializers.Serializer):
     Originally developed by orehush (https://gist.github.com/orehush/667c79b28fdc94f86746bd15694d1167).
     """
 
-    refresh = serializers.CharField()
+    refresh = serializers.CharField(write_only=True)
 
     default_error_messages = {
         'bad_token': 'Token is invalid or expired',
@@ -155,3 +155,10 @@ class LogoutSerializer(serializers.Serializer):
     def save(self):
         """Put in blacklist the refresh token."""
         RefreshToken(self.validated_data['refresh']).blacklist()
+
+
+class LoginRefreshResponseSerializer(serializers.Serializer):
+    """Serializer used only in login/refresh documentation."""
+
+    access = serializers.CharField(help_text='Access token, to be passed in JWT header auth.')
+    refresh = serializers.CharField(help_text='Refresh token, used to obtain a new access token when it is expired.')

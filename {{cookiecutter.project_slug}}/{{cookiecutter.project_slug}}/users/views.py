@@ -7,6 +7,7 @@ from typing import List
 from typing import Type
 
 from django.shortcuts import get_object_or_404
+from drf_yasg.utils import swagger_auto_schema
 from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework import status
@@ -14,6 +15,8 @@ from rest_framework import viewsets
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import token_obtain_pair
+from rest_framework_simplejwt.views import token_refresh
 {%- else %}
 
 from django.contrib import messages
@@ -28,6 +31,7 @@ from django.views.generic import UpdateView
 from {{ cookiecutter.project_slug }}.users.models import User
 {%- if cookiecutter.api_only_mode == 'y' %}
 from {{ cookiecutter.project_slug }}.users.permissions import IsStaffOrIsMe
+from {{ cookiecutter.project_slug }}.users.serializers import LoginRefreshResponseSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import LogoutSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserRegistrationSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserSerializer
@@ -141,11 +145,31 @@ class LogoutView(GenericAPIView):
     serializer_class = LogoutSerializer
     permission_classes = (permissions.IsAuthenticated, )
 
+    @swagger_auto_schema(responses={
+        status.HTTP_200_OK: 'detail: Refresh token invalidated.',
+    })
     def post(self, request, *args):
         """Take refresh token and blacklist it."""
         serializer = self.get_serializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         serializer.save()
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return Response({'detail': 'Refresh token invalidated.'}, status=status.HTTP_200_OK)
+
+
+login_view = swagger_auto_schema(
+    method='post',
+    responses={
+        status.HTTP_200_OK: LoginRefreshResponseSerializer,
+        status.HTTP_401_UNAUTHORIZED: 'code: authentication_failed',
+    },
+)(token_obtain_pair)
+
+refresh_token_view = swagger_auto_schema(
+    method='post',
+    responses={
+        status.HTTP_200_OK: LoginRefreshResponseSerializer,
+        status.HTTP_401_UNAUTHORIZED: 'code: token_not_valid',
+    },
+)(token_refresh)
 
 {%- endif %}

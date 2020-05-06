@@ -10,6 +10,8 @@ from rest_framework_simplejwt.views import TokenRefreshView
 
 from {{ cookiecutter.project_slug }}.users.views import LogoutView
 from {{ cookiecutter.project_slug }}.users.views import UserViewSet
+from {{ cookiecutter.project_slug }}.users.views import login_view
+from {{ cookiecutter.project_slug }}.users.views import refresh_token_view
 {%- else %}
 
 from {{ cookiecutter.project_slug }}.users.views import user_detail_view
@@ -20,9 +22,9 @@ from {{ cookiecutter.project_slug }}.users.views import user_update_view
 app_name = "users"
 urlpatterns = [
     {%- if cookiecutter.api_only_mode == 'y' %}
-    path('login/', TokenObtainPairView.as_view(), name='login'),
+    path('login/', login_view, name='login'),
     path('logout/', LogoutView.as_view(), name='logout'),
-    path('token/refresh/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('token/refresh/', refresh_token_view, name='token_refresh'),
     {%- else %}
     path("~redirect/", view=user_redirect_view, name="redirect"),
     path("~update/", view=user_update_view, name="update"),
