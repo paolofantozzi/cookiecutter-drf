@@ -38,7 +38,7 @@ class UserSerializer(serializers.ModelSerializer):
     def validate(self, data_sent):
         """Check if the data sent are valid."""
         cf = data_sent.get('cf', '').upper()
-        if len(cf) != 16:  # length of a standard cf
+        if len(cf) != 16:  # noqa: WPS432 - length of a standard cf
             raise serializers.ValidationError({
                 'cf': ['Not valid cf. It should have 16 characters.'],
             })
@@ -62,6 +62,9 @@ class UserSerializer(serializers.ModelSerializer):
         return User.objects.create_user(**valid_data)
 
 
+login_fields = {'username', 'password'}
+
+
 class UserUpdateSerializer(serializers.ModelSerializer):
     """Serializer for user update."""
 
@@ -69,10 +72,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         """Metadata for UserSerializer."""
 
         model = UserSerializer.Meta.model
-        fields = [fd for fd in UserSerializer.Meta.fields if fd not in {'password', 'email'}]
+        fields = [fd for fd in UserSerializer.Meta.fields if fd not in login_fields]
         read_only_fields = UserSerializer.Meta.read_only_fields
         extra_kwargs = {
-            key: vl for key, vl in UserSerializer.Meta.extra_kwargs.items() if key not in {'password', 'email'}
+            key: vl for key, vl in UserSerializer.Meta.extra_kwargs.items() if key not in login_fields
         }
 
 
@@ -108,9 +111,6 @@ class UserRegistrationSerializer(UserSerializer):
                 'help_text': 'JWT refresh token expiring time',
             },
         }
-
-
-login_fields = {'username', 'password'}
 
 
 class UserLoginSerializer(UserRegistrationSerializer):

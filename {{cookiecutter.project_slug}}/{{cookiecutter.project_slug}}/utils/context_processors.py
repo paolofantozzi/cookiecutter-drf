@@ -7,4 +7,4 @@ from django.conf import settings
 
 def settings_context(_request):
     """Set settings context."""
-    return {"settings": settings}
+    return {'settings': settings}

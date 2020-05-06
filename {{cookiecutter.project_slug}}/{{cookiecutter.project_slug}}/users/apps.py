@@ -7,11 +7,12 @@ from django.utils.translation import gettext_lazy as _
 
 
 class UsersConfig(AppConfig):
-    name = "{{ cookiecutter.project_slug }}.users"
-    verbose_name = _("Users")
+    name = '{{ cookiecutter.project_slug }}.users'
+    verbose_name = _('Users')
 
     def ready(self):
+        """Configure module when ready."""
         try:
-            import {{ cookiecutter.project_slug }}.users.signals  # noqa F401
+            import {{ cookiecutter.project_slug }}.users.signals  # noqa: F401,WPS433,WPS301
         except ImportError:
-            pass
+            pass  # noqa: WPS420

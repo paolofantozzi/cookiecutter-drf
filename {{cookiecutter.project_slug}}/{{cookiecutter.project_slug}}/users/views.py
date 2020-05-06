@@ -8,7 +8,6 @@ from typing import Type
 
 from django.shortcuts import get_object_or_404
 from drf_yasg.utils import swagger_auto_schema
-from rest_framework import mixins
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
@@ -85,15 +84,9 @@ user_redirect_view = UserRedirectView.as_view()
 {%- else %}
 
 
-class UserViewSet(
-    mixins.CreateModelMixin,
-    mixins.UpdateModelMixin,
-    mixins.ListModelMixin,
-    mixins.RetrieveModelMixin,
-    viewsets.GenericViewSet,
-):
+class UserViewSet(viewsets.ModelViewSet):
     """
-    Create, Update, List and retrieve users.
+    Create, Update, Delete, List and retrieve users.
 
     When an id is request it is possible to use `me` instead of an id,
     to return self.
@@ -134,6 +127,11 @@ class UserViewSet(
         else:
             permission_classes = [permissions.IsAuthenticated, IsStaffOrIsMe]
         return [permission() for permission in permission_classes]
+
+    def perform_destroy(self, user):
+        """Deactivate user instead of deleting it."""
+        user.is_active = False
+        user.save()
 
 
 class LogoutView(GenericAPIView):
