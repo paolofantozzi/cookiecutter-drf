@@ -20,3 +20,4 @@ test:
 	docker-compose -f local.yml -f local-test.yml run --rm django pytest --cov
 	docker-compose -f local.yml -f local-test.yml run django mypy {{ cookiecutter.project_slug }}
 	docker-compose -f local.yml -f local-test.yml run django coverage html
+	docker-compose -f local.yml -f local-test.yml run django flake8 {{ cookiecutter.project_slug }}
