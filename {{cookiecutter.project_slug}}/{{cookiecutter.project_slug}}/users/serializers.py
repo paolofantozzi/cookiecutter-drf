@@ -4,6 +4,7 @@
 
 from localflavor.it.util import ssn_validation
 from rest_framework import serializers
+from rest_framework.fields import CurrentUserDefault  # type: ignore  # djangorestframework-stubs not yet updated
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import TokenError
 
@@ -12,6 +13,9 @@ from {{ cookiecutter.project_slug }}.users.models import User
 
 class UserSerializer(serializers.ModelSerializer):
     """Serializer for User."""
+
+    is_staff = serializers.BooleanField(required=False)
+    current_user = serializers.HiddenField(default=CurrentUserDefault())
 
     class Meta:
         """Metadata for serializer."""
@@ -28,6 +32,8 @@ class UserSerializer(serializers.ModelSerializer):
             'cf',
             'is_privacy_accepted',
             'is_email_validated',
+            'is_staff',
+            'current_user',
         )
         read_only_fields = ('is_email_validated', )
         extra_kwargs = {
@@ -52,6 +58,12 @@ class UserSerializer(serializers.ModelSerializer):
         if User.objects.filter(cf=cf).exists():
             raise serializers.ValidationError({
                 'cf': ['User with this cf already exists.'],
+            })
+
+        user = data_sent.pop('current_user')
+        if data_sent.get('is_staff', False) and (not user.is_staff):
+            raise serializers.ValidationError({
+                'is_staff': ['Only staff user can grant privileges.'],
             })
 
         return super().validate(data_sent)
