@@ -2,8 +2,15 @@
 
 """Global utils functions.."""
 
+import types
+
 from rest_framework import status
 from rest_framework.views import exception_handler
+
+# Similar to a frozendict
+STATUS_ERROR_CODES = types.MappingProxyType({
+    status.HTTP_404_NOT_FOUND: 'not_found',
+})
 
 
 def error_code_exception_handler(exc, context):
@@ -12,8 +19,17 @@ def error_code_exception_handler(exc, context):
     # to get the standard error response.
     response = exception_handler(exc, context)
 
-    # If it is a 400 error then each code is a field
-    if response is not None and response.status_code != status.HTTP_400_BAD_REQUEST:
-        response.data['code'] = response.get('code', '') or getattr(exc, 'default_code', '')  # noqa: WPS221
+    if response is None:
+        return None
 
+    # first of all check the original response
+    code = response.get('code', '')
+
+    # if there is no code check the exception code
+    code = code or getattr(exc, 'default_code', '')
+
+    # if there is still no code then try the fixed codes otherwise empty string
+    code = code or STATUS_ERROR_CODES.get(response.status_code, '')
+
+    response.data['code'] = code
     return response
