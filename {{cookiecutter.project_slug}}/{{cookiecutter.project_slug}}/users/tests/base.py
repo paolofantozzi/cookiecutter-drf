@@ -28,3 +28,16 @@ class UsersBaseTest(APITestCase, URLPatternsTestCase):
             'username': self.username,
             'password': self.password,
         }
+
+        self.staff_username = 'staff_test'
+        self.staff_password = 'jhoda8adfkja'
+
+        self.staff_user = User.objects.create_user(
+            username=self.staff_username,
+            password=self.staff_password,
+            is_staff=True,
+        )
+        self.staff_login_post_data = {
+            'username': self.staff_username,
+            'password': self.staff_password,
+        }
