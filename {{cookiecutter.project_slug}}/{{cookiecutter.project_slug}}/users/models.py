@@ -30,6 +30,11 @@ class User(AbstractUser):
     cf = models.CharField(help_text=_('Codice Fiscale'), max_length=32)
     {%- if cookiecutter.api_only_mode == 'y' %}
 
+    @property
+    def current_user(self):  # TODO find a better way
+        """For swagger compatibility only."""
+        return None  # noqa: WPS324
+
     def get_jwt_access_token(self):
         """Return the current jwt access token."""
         try:

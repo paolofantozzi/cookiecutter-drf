@@ -5,8 +5,6 @@
 from django.urls import path
 {%- if cookiecutter.api_only_mode == 'y' %}
 from rest_framework.routers import DefaultRouter
-from rest_framework_simplejwt.views import TokenObtainPairView
-from rest_framework_simplejwt.views import TokenRefreshView
 
 from {{ cookiecutter.project_slug }}.users.views import LogoutView
 from {{ cookiecutter.project_slug }}.users.views import UserViewSet

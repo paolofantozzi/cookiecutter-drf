@@ -4,7 +4,7 @@
 
 from localflavor.it.util import ssn_validation
 from rest_framework import serializers
-from rest_framework.fields import CurrentUserDefault  # type: ignore  # djangorestframework-stubs not yet updated
+from rest_framework.fields import CurrentUserDefault  # type: ignore
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import TokenError
 
@@ -75,6 +75,7 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 login_fields = {'username', 'password'}
+unmutable_fields = login_fields | {'email'}
 
 
 class UserUpdateSerializer(serializers.ModelSerializer):
@@ -84,10 +85,10 @@ class UserUpdateSerializer(serializers.ModelSerializer):
         """Metadata for UserSerializer."""
 
         model = UserSerializer.Meta.model
-        fields = [fd for fd in UserSerializer.Meta.fields if fd not in login_fields]
+        fields = [fd for fd in UserSerializer.Meta.fields if fd not in unmutable_fields]
         read_only_fields = UserSerializer.Meta.read_only_fields
         extra_kwargs = {
-            key: vl for key, vl in UserSerializer.Meta.extra_kwargs.items() if key not in login_fields
+            key: vl for key, vl in UserSerializer.Meta.extra_kwargs.items() if key not in unmutable_fields
         }
 
 
@@ -169,8 +170,13 @@ class LogoutSerializer(serializers.Serializer):
         RefreshToken(self.validated_data['refresh']).blacklist()
 
 
-class LoginRefreshResponseSerializer(serializers.Serializer):
-    """Serializer used only in login/refresh documentation."""
+class RefreshResponseSerializer(serializers.Serializer):
+    """Serializer used only in refresh documentation."""
 
     access = serializers.CharField(help_text='Access token, to be passed in JWT header auth.')
+
+
+class LoginResponseSerializer(RefreshResponseSerializer):
+    """Serializer used only in login documentation."""
+
     refresh = serializers.CharField(help_text='Refresh token, used to obtain a new access token when it is expired.')

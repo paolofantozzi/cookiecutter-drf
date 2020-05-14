@@ -30,8 +30,9 @@ from django.views.generic import UpdateView
 from {{ cookiecutter.project_slug }}.users.models import User
 {%- if cookiecutter.api_only_mode == 'y' %}
 from {{ cookiecutter.project_slug }}.users.permissions import IsStaffOrIsMe
-from {{ cookiecutter.project_slug }}.users.serializers import LoginRefreshResponseSerializer
+from {{ cookiecutter.project_slug }}.users.serializers import LoginResponseSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import LogoutSerializer
+from {{ cookiecutter.project_slug }}.users.serializers import RefreshResponseSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserRegistrationSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import UserUpdateSerializer
@@ -120,7 +121,7 @@ class UserViewSet(viewsets.ModelViewSet):
         return UserSerializer
 
     def get_permissions(self):
-        """Instantiates and returns the list of permissions that this view requires."""
+        """Instantiate and returns the list of permissions that this view requires."""
         permission_classes: List[Type[BasePermission]] = []
         if self.action == 'create':  # type: ignore
             permission_classes = [permissions.AllowAny]
@@ -157,7 +158,7 @@ class LogoutView(GenericAPIView):
 login_view = swagger_auto_schema(
     method='post',
     responses={
-        status.HTTP_200_OK: LoginRefreshResponseSerializer,
+        status.HTTP_200_OK: LoginResponseSerializer,
         status.HTTP_401_UNAUTHORIZED: 'code: authentication_failed',
     },
 )(token_obtain_pair)
@@ -165,7 +166,7 @@ login_view = swagger_auto_schema(
 refresh_token_view = swagger_auto_schema(
     method='post',
     responses={
-        status.HTTP_200_OK: LoginRefreshResponseSerializer,
+        status.HTTP_200_OK: RefreshResponseSerializer,
         status.HTTP_401_UNAUTHORIZED: 'code: token_not_valid',
     },
 )(token_refresh)

@@ -317,11 +317,17 @@ def remove_api_only_starter_files():
     os.remove(os.path.join(base_dir, "users", "permissions.py"))
     os.remove(os.path.join(base_dir, "users", "serializers.py"))
     test_files = (
-        'create', 'destroy', 'list', 'login', 'logout', 'retrieve',
-        'serializers', 'update'
+        "create",
+        "destroy",
+        "list",
+        "login",
+        "logout",
+        "retrieve",
+        "serializers",
+        "update",
     )
     for tf in test_files:
-        file_name = 'test_{0}.py'.format(tf)
+        file_name = "test_{0}.py".format(tf)
         os.remove(os.path.join(base_dir, "users", "tests", file_name))
 
 
