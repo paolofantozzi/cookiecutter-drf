@@ -4,11 +4,12 @@
 
 from django.urls import include
 from django.urls import path
+from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase
 from rest_framework.test import URLPatternsTestCase
 
 from .. import urls
-from ..models import User
+from .factories import UserFactory
 
 
 class UsersBaseTest(APITestCase, URLPatternsTestCase):
@@ -17,27 +18,24 @@ class UsersBaseTest(APITestCase, URLPatternsTestCase):
     urlpatterns = [
         path('', include(urls, namespace='users')),
     ]
+    factory = APIRequestFactory()
 
     def setUp(self):
         """Create a test user."""
-        self.username = 'test'
-        self.password = 'kah2ie3urh4k'
-
-        self.user = User.objects.create_user(username=self.username, password=self.password)
+        psw = UserFactory.get_random_password()
+        self.user = UserFactory(password=psw)
         self.login_post_data = {
-            'username': self.username,
-            'password': self.password,
+            'username': self.user.username,
+            'password': psw,
         }
 
-        self.staff_username = 'staff_test'
-        self.staff_password = 'jhoda8adfkja'
-
-        self.staff_user = User.objects.create_user(
-            username=self.staff_username,
-            password=self.staff_password,
-            is_staff=True,
-        )
+        psw = UserFactory.get_random_password()
+        self.staff_user = UserFactory(password=psw, is_staff=True)
         self.staff_login_post_data = {
-            'username': self.staff_username,
-            'password': self.staff_password,
+            'username': self.staff_user.username,
+            'password': psw,
         }
+
+    def generate_valid_user_data(self):
+        """Return new valid data for user."""
+        return UserFactory.as_dict()

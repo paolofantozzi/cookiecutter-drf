@@ -2,39 +2,45 @@
 
 """User factory."""
 
-from typing import Any
-from typing import Sequence
-
+import factory
 from factory import DjangoModelFactory
 from factory import Faker
-from factory import post_generation
 
 from ..models import User
 
 
 class UserFactory(DjangoModelFactory):
-    """Factory for users."""
+    """Factory for users in django."""
 
     username = Faker('user_name')
     email = Faker('email')
-    name = Faker('name')
+    name = Faker('name', locale='it_IT')
+    cf = Faker('ssn', locale='it_IT')
+    password = Faker(
+        'password',
+        length=42,
+        special_chars=True,
+        digits=True,
+        upper_case=True,
+        lower_case=True,
+    )
 
-    @post_generation
-    def password(self, create: bool, extracted: Sequence[Any], **kwargs):
-        """Fake password generator."""
-        password = (
-            extracted
-            if extracted
-            else Faker(
-                'password',
-                length=42,
-                special_chars=True,
-                digits=True,
-                upper_case=True,
-                lower_case=True,
-            ).generate(extra_kwargs={})
-        )
-        self.set_password(password)
+    @classmethod
+    def as_dict(cls):
+        """Generate new random data as dict."""
+        return factory.build(dict, FACTORY_CLASS=cls)
+
+    @classmethod
+    def get_random_password(cls):
+        """Return a new random password."""
+        return cls.password.generate(extra_kwargs={})
+
+    @classmethod
+    def _create(cls, model_class, *args, **kwargs):
+        """Override the default ``_create`` with custom call."""
+        manager = cls._get_manager(model_class)
+        # The default would use ``manager.create(*args, **kwargs)``
+        return manager.create_user(*args, **kwargs)
 
     class Meta:
         """Metadata for the factory."""

@@ -44,6 +44,7 @@ class TestLoginCase(UsersBaseTest):
         req = self.client.post(self.refresh_token_url, {'refresh': body['refresh']})
         body = req.json()
         self.assertIn('access', body, body)
+        self.assertNotIn('refresh', body, body)
 
     def test_refresh_token_return_code_200(self):
         """Test return code for refresh token."""
@@ -82,3 +83,11 @@ class TestLoginCase(UsersBaseTest):
         req = self.client.get(self.my_profile_url)
         body = req.json()
         self.assertEqual(req.status_code, 200, body)
+
+    def test_authenticated_with_wrong_token_request_return_code_401(self):
+        """Test return code for wrong authenticated."""
+        self.client.credentials(HTTP_AUTHORIZATION='Bearer {0}'.format('wrongtoken'))
+        req = self.client.get(self.my_profile_url)
+        body = req.json()
+        self.assertEqual(req.status_code, 401, body)
+        self.assertEqual(body['code'], 'token_not_valid', body)
