@@ -1,0 +1,75 @@
+name: Test and deploy to server (brute force)
+on:
+  push:
+    branches: [ master ]
+jobs:
+
+  build:
+    name: Build
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:11.3
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_HOST: postgres
+          POSTGRES_PORT: 5432
+          POSTGRES_DB: {{cookiecutter.project_slug}}
+        ports:
+        - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+      redis:
+        image: redis:5.0
+        ports:
+        - 6379:6379
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: set environment variables
+      uses: allenevans/set-env@v1.0.0
+      with:
+        DATABASE_URL: "postgres://postgres:postgres@localhost:5432/{{cookiecutter.project_slug}}"
+        CELERY_BROKER_URL: "redis://locahost:6379/0"
+        DJANGO_SETTINGS_MODULE: 'config.settings.test'
+    - name: Set up Python 3.7
+      uses: actions/setup-python@v1
+      with:
+        python-version: 3.7
+    - name: psycopg2 prerequisites
+      run: sudo apt-get install python-dev libpq-dev
+    - run: |
+        python -m pip install --upgrade pip
+        pip install pipenv
+      name: Install pipenv
+    - uses: actions/cache@v1
+      id: cache-pip
+      with:
+        path: ~/.local/share/virtualenvs
+        key: ${{ runner.os }}-pip-env-${{ hashFiles('**/requirements/*.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-env-
+    - name: Install dependencies
+      if: steps.cache-pip.outputs.cache-hit != 'true'
+      run: pipenv install -r requirements/local.txt
+    - name: Run migrations
+      run: pipenv run python manage.py migrate
+    - name: Run tests
+      run: pipenv run pytest --cov
+    - name: Run mypy
+      run: pipenv run mypy {{cookiecutter.project_slug}}
+    - name: Run flake8
+      run: pipenv run flake8 {{cookiecutter.project_slug}}
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@master
+      with:
+        host: ${{ secrets.HOST }}
+        username: ${{ secrets.USERNAME }}
+        key: ${{ secrets.KEY }}
+        script: cd {{cookiecutter.project_slug}} && git pull && make down && make prod
