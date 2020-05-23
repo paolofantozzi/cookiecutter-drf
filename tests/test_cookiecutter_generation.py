@@ -100,6 +100,7 @@ SUPPORTED_COMBINATIONS = [
     {"use_heroku": "n"},
     {"ci_tool": "None"},
     {"ci_tool": "Travis"},
+    {"ci_tool": "GitHub"},
     {"ci_tool": "Gitlab"},
     {"ci_tool": "Bitbucket"},
     {"keep_local_envs_in_vcs": "y"},

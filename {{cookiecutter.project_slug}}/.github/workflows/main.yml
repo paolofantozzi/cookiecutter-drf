@@ -73,14 +73,14 @@ jobs:
         username: {{'${{ secrets.USERNAME }}'}}
         key: {{'${{ secrets.KEY }}'}}
         script: cd {{cookiecutter.project_slug}} && git pull && make down && make prod
-{% if cookiecutter.use_sentry == 'y' -%}
+{%- if cookiecutter.use_sentry == 'y' %}
     - name: Create a Sentry.io release
       uses: tclindner/sentry-releases-action@v1.0.0
       env:
-        SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
-        SENTRY_ORG: !!!INSERT YOUR ORG HERE!!!
+        SENTRY_AUTH_TOKEN: {{'${{ secrets.SENTRY_AUTH_TOKEN }}'}}
+        SENTRY_ORG: INSERT_YOUR_ORG_HERE
         SENTRY_PROJECT: {{cookiecutter.project_slug}}
       with:
         tagName: {{'${{ github.sha }}'}}
         environment: prod
-{% endif -%}
+{%- endif -%}
