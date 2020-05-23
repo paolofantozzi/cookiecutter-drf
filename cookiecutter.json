@@ -60,6 +60,7 @@
   "use_heroku": "n",
   "ci_tool": [
     "None",
+    "GitHub",
     "Travis",
     "Gitlab",
     "Bitbucket"

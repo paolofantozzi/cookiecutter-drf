@@ -128,6 +128,10 @@ def remove_bitbucketpipelinesyml_file():
     os.remove("bitbucket-pipelines.yml")
 
 
+def remove_githubci_file():
+    shutil.rmtree(".github")
+
+
 def append_to_project_gitignore(path):
     gitignore_file_path = ".gitignore"
     with open(gitignore_file_path, "a") as gitignore_file:
@@ -418,6 +422,9 @@ def main():
 
     if "{{ cookiecutter.ci_tool }}".lower() != "gitlab":
         remove_dotgitlabciyml_file()
+
+    if "{{ cookiecutter.ci_tool }}".lower() != "github":
+        remove_githubci_file()
 
     if "{{ cookiecutter.ci_tool }}".lower() != "bitbucket":
         remove_bitbucketpipelinesyml_file()
