@@ -17,7 +17,7 @@ from {{ cookiecutter.project_slug }}.users.views import user_redirect_view
 from {{ cookiecutter.project_slug }}.users.views import user_update_view
 {%- endif %}
 
-app_name = "users"
+app_name = 'users'
 urlpatterns = [
     {%- if cookiecutter.api_only_mode == 'y' %}
     path('login/', login_view, name='login'),
