@@ -10,7 +10,7 @@ jobs:
 
     services:
       postgres:
-        image: postgres:11.3
+        image: {% set postgres_version, postgis_version = cookiecutter.postgresql_postgis_version.split('/') %}{% if cookiecutter.use_postgis == 'y' %}postgis/postgis:{{ postgis_version }}{% else %}postgres:{{ postgres_version }}{% endif %}
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: postgres
