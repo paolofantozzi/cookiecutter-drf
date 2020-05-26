@@ -44,6 +44,10 @@ jobs:
         python-version: 3.7
     - name: psycopg2 prerequisites
       run: sudo apt-get install python-dev libpq-dev
+{%- if cookiecutter.use_postgis == 'y' %}
+    - name: postgis prerequisites
+      run: sudo apt-get install -y binutils libproj-dev gdal-bin libgeos-dev libgdal-dev
+{% endif %}
     - run: |
         python -m pip install --upgrade pip
         pip install pipenv
