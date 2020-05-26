@@ -13,6 +13,7 @@ To use this template::
 Forked from https://github.com/pydanny/cookiecutter-django with the following changes:
 
 - Postgres not in production mode (we assume that in production the database is managed externally)
+- Support for Postgis
 - Traefik managed as separated docker-compose with network defined as external for services
 - Bitbucket pipelines support
 - Github workflow support

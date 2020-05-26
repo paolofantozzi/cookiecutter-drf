@@ -18,6 +18,9 @@ cd my_awesome_project
 
 # docker-compose -f local.yml up --build -d
 
+docker-compose -f local.yml -f local-test.yml build postgres
+docker-compose -f local.yml -f local-test.yml build django
+
 # run the project's type checks
 docker-compose -f local.yml -f local-test.yml run django mypy my_awesome_project || docker-compose -f local.yml -f local-test.yml down -v
 

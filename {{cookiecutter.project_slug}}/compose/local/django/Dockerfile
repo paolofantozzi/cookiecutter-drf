@@ -12,6 +12,10 @@ RUN apt-get update \
   && apt-get install -y gettext \
   # git
   && apt-get install -y git \
+{%- if cookiecutter.use_postgis == 'y' %}
+  # GDAL (postgis integration)
+  && apt-get install -y binutils libproj-dev gdal-bin libgeos-dev libgdal-dev\
+{%- endif %}
   # cleaning up unused files
   && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false \
   && rm -rf /var/lib/apt/lists/*

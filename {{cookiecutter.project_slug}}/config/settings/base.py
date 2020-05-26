@@ -42,6 +42,9 @@ LOCALE_PATHS = [str(ROOT_DIR / "locale")]
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 DATABASES = {"default": env.db("DATABASE_URL")}
 DATABASES["default"]["ATOMIC_REQUESTS"] = True
+{%- if cookiecutter.use_postgis == 'y' %}
+DATABASES["default"]["ENGINE"] = 'django.contrib.gis.db.backends.postgis'
+{%- endif %}
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -62,6 +65,9 @@ DJANGO_APPS = [
     "django.contrib.sites",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+{%- if cookiecutter.use_postgis == 'y' %}
+    'django.contrib.gis',
+{%- endif %}
     # "django.contrib.humanize", # Handy template tags
     "django.forms",
     'localflavor',
