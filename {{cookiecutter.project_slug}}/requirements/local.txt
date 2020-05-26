@@ -30,7 +30,7 @@ pylint-django==2.0.15  # https://github.com/PyCQA/pylint-django
 pylint-celery==0.3  # https://github.com/PyCQA/pylint-celery
 {%- endif %}
 pre-commit==2.2.0  # https://github.com/pre-commit/pre-commit
-wemake-python-styleguide==0.14.0  # https://github.com/wemake-services/wemake-python-styleguide
+git+git://github.com/wemake-services/wemake-python-styleguide#egg=wemake-python-styleguide
 python-language-server[all]==0.31.2  # https://github.com/palantir/python-language-server
 
 # Django
