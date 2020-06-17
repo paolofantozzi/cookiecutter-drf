@@ -2,6 +2,8 @@
 
 """Serializers for users."""
 
+import re
+
 from localflavor.it.util import ssn_validation
 from rest_framework import serializers
 from rest_framework.fields import CurrentUserDefault  # type: ignore
@@ -47,6 +49,10 @@ class UserSerializer(serializers.ModelSerializer):
         if len(cf) != 16:  # noqa: WPS432 - length of a standard cf
             raise serializers.ValidationError({
                 'cf': ['Not valid cf. It should have 16 characters.'],
+            })
+        if re.match(r'[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]', cf) is None:
+            raise serializers.ValidationError({
+                'cf': ['Not valid cf'],
             })
         try:
             ssn_validation(cf)
