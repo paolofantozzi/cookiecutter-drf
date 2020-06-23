@@ -315,6 +315,10 @@ def remove_drf_starter_files():
     shutil.rmtree(os.path.join("{{cookiecutter.project_slug}}", "users", "api"))
 
 
+def remove_template_files():
+    shutil.rmtree(os.path.join("{{cookiecutter.project_slug}}", "templates"))
+
+
 def remove_api_only_starter_files():
     base_dir = "{{cookiecutter.project_slug}}"
     os.remove(os.path.join("config", "utils.py"))
@@ -432,6 +436,7 @@ def main():
     if "{{ cookiecutter.api_only_mode }}".lower() == "y":
         remove_drf_starter_files()
         remove_gui_starter_files()
+        remove_template_files()
     elif "{{ cookiecutter.use_drf }}".lower() == "y":
         remove_api_only_starter_files()
     else:
