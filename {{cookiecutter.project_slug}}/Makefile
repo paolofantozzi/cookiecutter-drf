@@ -11,7 +11,9 @@ local:
 	docker-compose -f local.yml up --build
 
 migrations:
-	docker-compose -f local.yml -f local-migrations.yml up --build
+	docker-compose -f local.yml up --build -d django
+	docker-compose -f local.yml exec django /entrypoint python manage.py makemigrations
+	docker-compose -f local.yml down
 
 reset-local:
 	docker-compose -f local.yml down -v
