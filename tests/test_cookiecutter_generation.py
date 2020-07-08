@@ -166,7 +166,7 @@ def test_flake8_passes(cookies, context_override):
     result = cookies.bake(extra_context=context_override)
 
     try:
-        sh.flake8(str(result.project))
+        sh.flake8(_cwd=str(result.project))
     except sh.ErrorReturnCode as e:
         pytest.fail(e.stdout.decode())
 
