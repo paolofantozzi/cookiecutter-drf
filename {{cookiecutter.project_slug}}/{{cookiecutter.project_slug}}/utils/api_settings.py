@@ -21,14 +21,15 @@ class APISettings:
     performs some operations (like cache clearing) when the settings change.
 
     Attributes:
-        settings_key: the key to be used in settings to be mapped to module settings
-        defaults: values that should be used as defaults if the user does not customize the module. Keyword only arg.
-        settings_to_import: list of setting keys that should be managed as module attributes. Keyword only arg.
-        raise_if_not_exist: when True it raises an exception if the key does not exist neither in user_settings and
-            in defaults. It returns None otherwise. Keyword only arg.
+        settings_key (str): the key to be used in settings to be mapped to module settings
+        defaults (dict): values that should be used as defaults if the user does not customize the module.
+        Keyword only arg.
+        settings_to_import (list): list of setting keys that should be managed as module attributes. Keyword only arg.
+        raise_if_not_exist (bool): when True it raises an exception if the key does not exist neither in user_settings
+        and in defaults. It returns None otherwise. Keyword only arg.
 
     An example of using in a module settings.py is:
-    >>> from vasplat.utils.api_settings import APISettings
+    >>> from {{ cookiecutter.project_slug }}.utils.api_settings import APISettings
     >>> defaults = {'KEY_1': 'value1', 'KEY_TO_IMPORT': 'module.class_attribute', 'KEY_2': 'module.class_attribute'}
     >>> settings_to_import = ['KEY_TO_IMPORT']
     >>> api_settings = APISettings('KEY_IN_SETTINGS', defaults=defaults, settings_to_import=settings_to_import)
