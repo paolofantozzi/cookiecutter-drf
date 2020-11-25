@@ -9,11 +9,9 @@ from django.test import RequestFactory
 
 from {{ cookiecutter.project_slug }}.users.models import User
 from {{ cookiecutter.project_slug }}.users.tests.factories import UserFactory
-from {{ cookiecutter.project_slug }}.users.views import (
-    UserRedirectView,
-    UserUpdateView,
-    user_detail_view,
-)
+from {{ cookiecutter.project_slug }}.users.views import UserRedirectView
+from {{ cookiecutter.project_slug }}.users.views import UserUpdateView
+from {{ cookiecutter.project_slug }}.users.views import user_detail_view
 
 pytestmark = pytest.mark.django_db
 

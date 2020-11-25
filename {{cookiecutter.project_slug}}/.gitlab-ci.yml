@@ -39,7 +39,7 @@ pytest:
   tags:
     - python
   services:
-    - postgres:{{ cookiecutter.postgresql_version }}
+    - postgres:{{ cookiecutter.postgresql_postgis_version }}
   variables:
     DATABASE_URL: pgsql://$POSTGRES_USER:$POSTGRES_PASSWORD@postgres/$POSTGRES_DB
 
@@ -49,4 +49,3 @@ pytest:
   script:
     - pytest
   {%- endif %}
-
