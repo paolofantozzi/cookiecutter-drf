@@ -142,13 +142,13 @@ def check_paths(paths):
 
         for line in open(path, "r"):
             match = RE_OBJ.search(line)
-            msg = "cookiecutter variable not replaced in {}"
-            assert match is None, msg.format(path)
+            assert match is None, f"cookiecutter variable not replaced in {path}"
 
 
 @pytest.mark.parametrize("context_override", SUPPORTED_COMBINATIONS, ids=_fixture_id)
 def test_project_generation(cookies, context, context_override):
     """Test that project is generated and fully rendered."""
+
     result = cookies.bake(extra_context={**context, **context_override})
     assert result.exit_code == 0
     assert result.exception is None
@@ -184,7 +184,10 @@ def test_flake8_passes(cookies, context_override):
 
 @pytest.mark.parametrize(
     ["use_docker", "expected_test_script"],
-    [("n", "pytest"), ("y", "docker-compose -f local.yml run django pytest"),],
+    [
+        ("n", "pytest"),
+        ("y", "docker-compose -f local.yml run django pytest"),
+    ],
 )
 def test_travis_invokes_pytest(cookies, context, use_docker, expected_test_script):
     context.update({"ci_tool": "Travis", "use_docker": use_docker})
@@ -197,7 +200,7 @@ def test_travis_invokes_pytest(cookies, context, use_docker, expected_test_scrip
 
     with open(f"{result.project}/.travis.yml", "r") as travis_yml:
         try:
-            yml = yaml.load(travis_yml, Loader=yaml.FullLoader)["jobs"]["include"]
+            yml = yaml.safe_load(travis_yml)["jobs"]["include"]
             assert yml[0]["script"] == ["flake8"]
             assert yml[1]["script"] == [expected_test_script]
         except yaml.YAMLError as e:
@@ -206,7 +209,10 @@ def test_travis_invokes_pytest(cookies, context, use_docker, expected_test_scrip
 
 @pytest.mark.parametrize(
     ["use_docker", "expected_test_script"],
-    [("n", "pytest"), ("y", "docker-compose -f local.yml run django pytest"),],
+    [
+        ("n", "pytest"),
+        ("y", "docker-compose -f local.yml run django pytest"),
+    ],
 )
 def test_gitlab_invokes_flake8_and_pytest(
     cookies, context, use_docker, expected_test_script
@@ -221,9 +227,45 @@ def test_gitlab_invokes_flake8_and_pytest(
 
     with open(f"{result.project}/.gitlab-ci.yml", "r") as gitlab_yml:
         try:
-            gitlab_config = yaml.load(gitlab_yml, Loader=yaml.FullLoader)
+            gitlab_config = yaml.safe_load(gitlab_yml)
             assert gitlab_config["flake8"]["script"] == ["flake8"]
             assert gitlab_config["pytest"]["script"] == [expected_test_script]
+        except yaml.YAMLError as e:
+            pytest.fail(e)
+
+
+@pytest.mark.parametrize(
+    ["use_docker", "expected_test_script"],
+    [
+        ("n", "pytest"),
+        ("y", "docker-compose -f local.yml exec -T django pytest"),
+    ],
+)
+def test_github_invokes_flake8_and_pytest(
+    cookies, context, use_docker, expected_test_script
+):
+    context.update({"ci_tool": "Github", "use_docker": use_docker})
+    result = cookies.bake(extra_context=context)
+
+    assert result.exit_code == 0
+    assert result.exception is None
+    assert result.project.basename == context["project_slug"]
+    assert result.project.isdir()
+
+    with open(f"{result.project}/.github/workflows/ci.yml", "r") as github_yml:
+        try:
+            github_config = yaml.safe_load(github_yml)
+            flake8_present = False
+            for action_step in github_config["jobs"]["flake8"]["steps"]:
+                if action_step.get("run") == "flake8":
+                    flake8_present = True
+            assert flake8_present
+
+            expected_test_script_present = False
+            for action_step in github_config["jobs"]["pytest"]["steps"]:
+                if action_step.get("run") == expected_test_script:
+                    expected_test_script_present = True
+            assert expected_test_script_present
         except yaml.YAMLError as e:
             pytest.fail(e)
 

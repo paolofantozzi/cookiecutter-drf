@@ -22,6 +22,10 @@ def error_code_exception_handler(exc, context):
     if response is None:
         return None
 
+    # make sure the response is a dict
+    if not isinstance(response.data, dict):
+        response.data = {'detail': response.data}  # noqa: WPS110  # variable name defined in framework
+
     # first of all check the original response
     code = response.get('code', '')
 

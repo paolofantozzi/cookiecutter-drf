@@ -3,8 +3,8 @@
 """User factory."""
 
 import factory
-from factory import DjangoModelFactory
 from factory import Faker
+from factory.django import DjangoModelFactory
 
 from ..models import User
 

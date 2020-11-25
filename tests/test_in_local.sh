@@ -31,6 +31,6 @@ docker-compose -f local.yml -f local-test.yml run django pytest || docker-compos
 docker-compose -f local.yml -f local-test.yml run django python manage.py makemigrations --dry-run --check || { echo "ERROR: there were changes in the models, but migration listed above have not been created and are not saved in version control"; docker-compose -f local.yml -f local-test.yml down -v; exit 1; }
 
 # Test support for translations
-docker-compose -f local.yml -f local-test.yml run django python manage.py makemessages || docker-compose -f local.yml -f local-test.yml down -v
+# docker-compose -f local.yml -f local-test.yml run django python manage.py makemessages || docker-compose -f local.yml -f local-test.yml down -v
 
 docker-compose -f local.yml -f local-test.yml down -v

@@ -7,15 +7,16 @@ from typing import List
 from typing import Type
 
 from django.shortcuts import get_object_or_404
-from drf_yasg.utils import swagger_auto_schema
+from drf_spectacular.utils import extend_schema
+from drf_spectacular.utils import extend_schema_view
 from rest_framework import permissions
 from rest_framework import status
 from rest_framework import viewsets
 from rest_framework.generics import GenericAPIView
 from rest_framework.permissions import BasePermission
 from rest_framework.response import Response
-from rest_framework_simplejwt.views import token_obtain_pair
-from rest_framework_simplejwt.views import token_refresh
+from rest_framework_simplejwt.views import TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 {%- else %}
 
 from django.contrib import messages
@@ -95,8 +96,7 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_queryset(self):
         """Return all the users if is staff, self otherwise."""
-        if getattr(self, 'swagger_fake_view', False):  # noqa: WPS425
-            # Queryset just for schema generation metadata
+        if self.request.user.is_anonymous:
             return User.objects.none()
         if self.request.user.is_staff:
             return User.objects.all()
@@ -114,16 +114,16 @@ class UserViewSet(viewsets.ModelViewSet):
 
     def get_serializer_class(self):
         """Return detailed serializer only for retrieve."""
-        if self.action in {'update', 'partial_update'}:  # type: ignore  # mypy plugin bug
+        if self.action in {'update', 'partial_update'}:
             return UserUpdateSerializer
-        elif self.action == 'create':  # type: ignore
+        elif self.action == 'create':
             return UserRegistrationSerializer
         return UserSerializer
 
     def get_permissions(self):
         """Instantiate and returns the list of permissions that this view requires."""
         permission_classes: List[Type[BasePermission]] = []
-        if self.action == 'create':  # type: ignore
+        if self.action == 'create':
             permission_classes = [permissions.AllowAny]
         else:
             permission_classes = [permissions.IsAuthenticated, IsStaffOrIsMe]
@@ -144,9 +144,9 @@ class LogoutView(GenericAPIView):
     serializer_class = LogoutSerializer
     permission_classes = (permissions.IsAuthenticated, )
 
-    @swagger_auto_schema(responses={
-        status.HTTP_200_OK: 'detail: Refresh token invalidated.',
-    })
+    @extend_schema(
+        responses={status.HTTP_200_OK: 'detail: Refresh token invalidated.'},
+    )
     def post(self, request, *args):
         """Take refresh token and blacklist it."""
         serializer = self.get_serializer(data=request.data)
@@ -155,20 +155,28 @@ class LogoutView(GenericAPIView):
         return Response({'detail': 'Refresh token invalidated.'}, status=status.HTTP_200_OK)
 
 
-login_view = swagger_auto_schema(
-    method='post',
-    responses={
-        status.HTTP_200_OK: LoginResponseSerializer,
-        status.HTTP_401_UNAUTHORIZED: 'code: authentication_failed',
-    },
-)(token_obtain_pair)
+@extend_schema_view(
+    post=extend_schema(
+        responses={
+            status.HTTP_200_OK: LoginResponseSerializer,
+            status.HTTP_401_UNAUTHORIZED: 'code: authentication_failed',
+        },
+    ),
+)
+class LoginView(TokenObtainPairView):
+    """Redefined view to add documentation details."""
 
-refresh_token_view = swagger_auto_schema(
-    method='post',
-    responses={
-        status.HTTP_200_OK: RefreshResponseSerializer,
-        status.HTTP_401_UNAUTHORIZED: 'code: token_not_valid',
-    },
-)(token_refresh)
+
+@extend_schema_view(
+    post=extend_schema(
+        responses={
+            status.HTTP_200_OK: RefreshResponseSerializer,
+            status.HTTP_401_UNAUTHORIZED: None,
+        },
+    ),
+)
+class RefreshTokenView(TokenRefreshView):
+    """Redefined view to add documentation details."""
+
 
 {%- endif %}

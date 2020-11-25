@@ -4,6 +4,7 @@
 
 from django.urls import include
 from django.urls import path
+from rest_framework.test import APIClient
 from rest_framework.test import APIRequestFactory
 from rest_framework.test import APITestCase
 from rest_framework.test import URLPatternsTestCase
@@ -15,6 +16,7 @@ from .factories import UserFactory
 class UsersBaseTest(APITestCase, URLPatternsTestCase):
     """Base test case for users."""
 
+    client: APIClient
     urlpatterns = [
         path('', include(urls, namespace='users')),
     ]

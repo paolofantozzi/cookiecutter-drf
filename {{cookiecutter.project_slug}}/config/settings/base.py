@@ -5,8 +5,8 @@ from pathlib import Path
 
 import environ
 
-ROOT_DIR = Path(__file__).parents[2]
-# {{ cookiecutter.project_slug }}/)
+ROOT_DIR = Path(__file__).resolve(strict=True).parent.parent.parent
+# {{ cookiecutter.project_slug }}/
 APPS_DIR = ROOT_DIR / "{{ cookiecutter.project_slug }}"
 env = environ.Env()
 
@@ -87,9 +87,10 @@ THIRD_PARTY_APPS = [
 {%- if cookiecutter.api_only_mode == 'y' %}
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
-    'drf_yasg',
+    'drf_spectacular',
 {%- else %}
     "rest_framework.authtoken",
+    "corsheaders",
 {%- endif %}
 ]
 
@@ -148,6 +149,9 @@ AUTH_PASSWORD_VALIDATORS = [
 # https://docs.djangoproject.com/en/dev/ref/settings/#middleware
 MIDDLEWARE = [
     "django.middleware.security.SecurityMiddleware",
+{%- if cookiecutter.use_drf == 'y' %}
+    "corsheaders.middleware.CorsMiddleware",
+{%- endif %}
 {%- if cookiecutter.use_whitenoise == 'y' %}
     "whitenoise.middleware.WhiteNoiseMiddleware",
 {%- endif %}
@@ -350,7 +354,22 @@ REST_FRAMEWORK = {
     ),
     "DEFAULT_PERMISSION_CLASSES": ("rest_framework.permissions.IsAuthenticated",),
     'EXCEPTION_HANDLER': 'config.utils.error_code_exception_handler',
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
+
+SPECTACULAR_SETTINGS = {
+    'TITLE': '{{cookiecutter.project_name}} API',
+    'DESCRIPTION': 'All the possible interactions with {{cookiecutter.project_slug}}.',
+    # Optional: MAY contain "name", "url", "email"
+    'CONTACT': {'email': 'info@{{cookiecutter.domain_name}}'},
+    # Optional: MUST contain "name", MAY contain URL
+    'LICENSE': {'name': '{{cookiecutter.open_source_license}}'},
+    'SCHEMA_PATH_PREFIX': r'/api',
+}
+
+# django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
+CORS_URLS_REGEX = r"^/api/.*$"
+
 {%- endif %}
 # Your stuff...
 # ------------------------------------------------------------------------------

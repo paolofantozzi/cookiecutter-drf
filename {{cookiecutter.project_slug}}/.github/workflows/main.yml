@@ -33,7 +33,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: set environment variables
-      uses: allenevans/set-env@v1.0.0
+      uses: allenevans/set-env@v2.0.0
       with:
         DATABASE_URL: "postgres://postgres:postgres@localhost:5432/{{cookiecutter.project_slug}}"
         CELERY_BROKER_URL: "redis://locahost:6379/0"
