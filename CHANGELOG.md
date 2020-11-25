@@ -3,6 +3,115 @@ All enhancements and patches to Cookiecutter Django will be documented in this f
 
 <!-- GENERATOR_PLACEHOLDER -->
 
+## [2020-11-23]
+### Updated
+- Update uvicorn to 0.12.3 ([#2943](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2943))
+- Update pre-commit to 2.9.0 ([#2942](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2942))
+
+## [2020-11-21]
+### Changed
+- Fix after uvicorn 0.12.0 - Ship extra dependencies ([#2939](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2939))
+
+## [2020-11-20]
+### Updated
+- Update sentry-sdk to 0.19.4 ([#2938](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2938))
+
+## [2020-11-19]
+### Updated
+- Update django-crispy-forms to 1.10.0 ([#2937](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2937))
+
+## [2020-11-17]
+### Changed
+- Bump peter-evans/create-pull-request from v2 to v3.5.0 ([#2936](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2936))
+
+## [2020-11-15]
+### Changed
+- Fix formatting in docs ([#2935](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2935))
+
+## [2020-11-13]
+### Changed
+- Upgrade factory-boy to 3.1.0 ([#2932](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2932))
+### Updated
+- Update sentry-sdk to 0.19.3 ([#2933](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2933))
+- Update sphinx to 3.3.1 ([#2934](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2934))
+
+## [2020-11-12]
+### Changed
+- Migrate CI to Github Actions ([#2931](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2931))
+
+## [2020-11-06]
+### Updated
+- Update djangorestframework to 3.12.2 ([#2930](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2930))
+
+## [2020-11-04]
+### Changed
+- Fix docs service and add RTD support ([#2920](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2920))
+- Bump stefanzweifel/git-auto-commit-action from v4.6.0 to v4.7.2 ([#2914](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2914))
+### Updated
+- Auto-update pre-commit hooks ([#2908](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2908))
+- Update mypy to 0.790 ([#2886](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2886))
+- Update django-stubs to 1.7.0 ([#2916](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2916))
+
+## [2020-11-03]
+### Updated
+- Update sentry-sdk to 0.19.2 ([#2926](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2926))
+- Update sphinx to 3.3.0 ([#2925](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2925))
+- Update django to 3.0.11 ([#2924](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2924))
+- Update pytz to 2020.4 ([#2923](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2923))
+- Update pre-commit to 2.8.2 ([#2919](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2919))
+- Update pytest to 6.1.2 ([#2917](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2917))
+- Update sh to 1.14.1 ([#2912](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2912))
+- Update pytest-django to 4.1.0 ([#2911](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2911))
+- Update pillow to 8.0.1 ([#2910](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2910))
+- Update django-celery-beat to 2.1.0 ([#2907](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2907))
+- Update uvicorn to 0.12.2 ([#2906](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2906))
+
+## [2020-10-19]
+### Updated
+- Update sentry-sdk to 0.19.1 ([#2905](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2905))
+
+## [2020-10-17]
+### Updated
+- Update django-allauth to 0.43.0 ([#2901](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2901))
+- Update pytest-django to 4.0.0 ([#2903](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2903))
+
+## [2020-10-15]
+### Updated
+- Update pillow to 8.0.0 ([#2898](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2898))
+
+## [2020-10-14]
+### Updated
+- Auto-update pre-commit hooks ([#2897](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2897))
+- Update sentry-sdk to 0.19.0 ([#2896](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2896))
+
+## [2020-10-13]
+### Updated
+- Update isort to 5.6.4 ([#2895](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2895))
+
+## [2020-10-12]
+### Changed
+- Bump stefanzweifel/git-auto-commit-action from v4.5.1 to v4.6.0 ([#2893](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2893))
+### Updated
+- Auto-update pre-commit hooks ([#2892](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2892))
+
+## [2020-10-11]
+### Updated
+- Auto-update pre-commit hooks ([#2890](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2890))
+- Update isort to 5.6.3 ([#2891](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2891))
+- Update django-anymail to 8.1 ([#2887](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2887))
+- Update tox to 3.20.1 ([#2885](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2885))
+
+## [2020-10-09]
+### Updated
+- Auto-update pre-commit hooks ([#2884](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2884))
+- Update isort to 5.6.1 ([#2883](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2883))
+
+## [2020-10-08]
+### Changed
+- Add dedicated websockets package ([#2881](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2881))
+### Updated
+- Update isort to 5.6.0 ([#2882](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2882))
+
 ## [2020-10-04]
 ### Updated
 - Update pytest to 6.1.1 ([#2880](https://api.github.com/repos/pydanny/cookiecutter-django/pulls/2880))

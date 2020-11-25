@@ -33,7 +33,7 @@ class UserFactory(DjangoModelFactory):
     @classmethod
     def get_random_password(cls):
         """Return a new random password."""
-        return cls.password.generate(extra_kwargs={})
+        return cls.password.generate({'locale': 'it_IT'})
 
     @classmethod
     def _create(cls, model_class, *args, **kwargs):

@@ -1,9 +1,5 @@
 Cookiecutter Django
-=======================
-
-.. image:: https://travis-ci.org/paolofantozzi/cookiecutter-django.svg?branch=master
-    :target: https://travis-ci.org/paolofantozzi/cookiecutter-django?branch=master
-    :alt: Build Status
+===================
 
 To use this template::
 

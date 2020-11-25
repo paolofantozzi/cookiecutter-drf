@@ -44,7 +44,7 @@ class TestSerializersCase(UsersBaseTest):
     def test_not_valid_cf_random_string(self):
         """Test not valid serializer for random string cf."""
         new_data = self.generate_valid_user_data()
-        new_data['cf'] = Faker('pystr', max_chars=16).generate()
+        new_data['cf'] = Faker('pystr', max_chars=16).generate({'locale': 'it_IT'})
         request = self.get_request()
         serializer = UserSerializer(data=new_data, context={'request': request})
         self.assertFalse(serializer.is_valid(), new_data['cf'])
