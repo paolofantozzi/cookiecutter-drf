@@ -12,12 +12,12 @@ flake8-isort==4.0.0
 # Testing
 # ------------------------------------------------------------------------------
 tox==3.20.1
-pytest==5.4.3
+pytest==5.4.3  # pyup: <6  # https://github.com/hackebrot/pytest-cookies/issues/51
 pytest-cookies==0.5.1
 pytest-instafail==0.4.2
 pyyaml==5.3.1
 
 # Scripting
 # ------------------------------------------------------------------------------
-PyGithub==1.53
+PyGithub==1.54
 jinja2==2.11.2
