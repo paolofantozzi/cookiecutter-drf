@@ -367,8 +367,13 @@ SPECTACULAR_SETTINGS = {
     'SCHEMA_PATH_PREFIX': r'/api',
 }
 
+
 # django-cors-headers - https://github.com/adamchainz/django-cors-headers#setup
+{% if cookiecutter.api_only_mode == 'y' -%}
+CORS_ORIGIN_ALLOW_ALL = True
+{%- else %}
 CORS_URLS_REGEX = r"^/api/.*$"
+{%- endif %}
 
 {%- endif %}
 # Your stuff...
