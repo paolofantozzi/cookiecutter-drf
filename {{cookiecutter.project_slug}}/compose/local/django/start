@@ -5,6 +5,41 @@ set -o pipefail
 set -o nounset
 
 python manage.py migrate
+
+{%- if cookiecutter.cloud_provider == 'AWS' %}
+localstack_ready() {
+python << END
+import sys
+import boto3
+try:
+    client = boto3.client(
+      's3',
+      endpoint_url='${DJANGO_AWS_S3_ENDPOINT_URL}',
+      aws_access_key_id='${DJANGO_AWS_ACCESS_KEY_ID}',
+      aws_secret_access_key='${DJANGO_AWS_SECRET_ACCESS_KEY}',
+    )
+    resp = client.list_buckets()
+    bucket_names = [b['Name'] for b in resp['Buckets']]
+except Exception:
+    sys.exit(-1)
+try:
+    if 'test' not in bucket_names:
+        client.create_bucket(Bucket='test')
+except Exception:
+    print('Bucket already exists.')
+    pass
+sys.exit(0)
+END
+}
+until localstack_ready; do
+  >&2 echo 'Waiting for LocalStack to become available...'
+  sleep 1
+done
+>&2 echo 'LocalStack is available'
+
+python manage.py collectstatic --no-input
+{% endif %}
+
 {%- if cookiecutter.use_async == 'y' %}
 uvicorn config.asgi:application --host 0.0.0.0 --reload
 {%- else %}

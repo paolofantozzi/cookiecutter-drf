@@ -6,13 +6,26 @@
 from storages.backends.s3boto3 import S3Boto3Storage
 
 
-class StaticRootS3Boto3Storage(S3Boto3Storage):
-    location = "static"
-    default_acl = "public-read"
+class StaticStorage(S3Boto3Storage):
+    """Storage for static files."""
+
+    location = 'static'
+    default_acl = 'public-read'
 
 
-class MediaRootS3Boto3Storage(S3Boto3Storage):
-    location = "media"
+class PublicMediaStorage(S3Boto3Storage):
+    """Storage for media files."""
+
+    location = 'media'
+    default_acl = 'public-read'
+    file_overwrite = False
+
+
+class PrivateMediaStorage(S3Boto3Storage):
+    """Storage for private files."""
+
+    location = 'private'
+    default_acl = 'private'
     file_overwrite = False
 {%- elif cookiecutter.cloud_provider == 'GCP' -%}
 from storages.backends.gcloud import GoogleCloudStorage

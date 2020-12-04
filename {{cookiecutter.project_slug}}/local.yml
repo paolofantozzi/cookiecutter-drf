@@ -4,6 +4,9 @@ volumes:
   local_postgres_data: {}
   local_postgres_data_backups: {}
   pgadmin: {}
+  {%- if cookiecutter.cloud_provider == 'AWS' %}
+  localstack: {}
+  {%- endif %}
 
 services:
   django:{% if cookiecutter.use_celery == 'y' %} &django{% endif %}
@@ -122,4 +125,16 @@ services:
       # Expose browsersync UI: https://www.browsersync.io/docs/options/#option-ui
       - "3001:3001"
 
+  {%- endif %}
+  {%- if cookiecutter.cloud_provider == 'AWS' %}
+  localstack:
+    image: localstack/localstack
+    environment:
+      - SERVICES=s3
+      - DATA_DIR=/tmp/localstack/data
+      - HOST_TMP_FOLDER=localstack/
+    volumes:
+      - "localstack:/tmp/localstack"
+    ports:
+      - "4566-4599:4566-4599"
   {%- endif %}
