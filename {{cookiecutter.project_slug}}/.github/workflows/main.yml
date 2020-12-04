@@ -38,6 +38,11 @@ jobs:
         DATABASE_URL: "postgres://postgres:postgres@localhost:5432/{{cookiecutter.project_slug}}"
         CELERY_BROKER_URL: "redis://locahost:6379/0"
         DJANGO_SETTINGS_MODULE: 'config.settings.test'
+        {%- if cookiecutter.cloud_provider == 'AWS' %}
+        DJANGO_AWS_ACCESS_KEY_ID: foo
+        DJANGO_AWS_SECRET_ACCESS_KEY: bar
+        DJANGO_AWS_STORAGE_BUCKET_NAME: test
+        {%- endif %}
     - name: Set up Python 3.7
       uses: actions/setup-python@v1
       with:
