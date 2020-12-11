@@ -89,6 +89,7 @@ THIRD_PARTY_APPS = [
     'rest_framework_simplejwt',
     'rest_framework_simplejwt.token_blacklist',
     'drf_spectacular',
+    'djoser',
 {%- else %}
     "rest_framework.authtoken",
 {%- endif %}
@@ -373,6 +374,21 @@ SPECTACULAR_SETTINGS = {
 CORS_ORIGIN_ALLOW_ALL = True
 {%- else %}
 CORS_URLS_REGEX = r"^/api/.*$"
+{%- endif %}
+
+{% if cookiecutter.api_only_mode == 'y' -%}
+DJOSER = {
+    'PASSWORD_RESET_CONFIRM_URL': '#/password/reset/confirm/{uid}/{token}',
+    'USERNAME_RESET_CONFIRM_URL': '#/username/reset/confirm/{uid}/{token}',
+    'ACTIVATION_URL': '#/activate/{uid}/{token}',
+    'SEND_ACTIVATION_EMAIL': True,
+    'HIDE_USERS': True,
+    'SERIALIZERS': {
+        'user': '{{cookiecutter.project_slug}}.users.serializers.UserSerializer',
+        'current_user': '{{cookiecutter.project_slug}}.users.serializers.UserSerializer',
+        'user_create': '{{cookiecutter.project_slug}}.users.serializers.UserRegistrationSerializer',
+    },
+}
 {%- endif %}
 
 {%- endif %}

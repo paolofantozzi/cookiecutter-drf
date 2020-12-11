@@ -2,14 +2,14 @@
 
 """Serializers for users."""
 
-import re
-
-from localflavor.it.util import ssn_validation
+from django.utils import timezone
 from rest_framework import serializers
+from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import TokenError
 
 from {{ cookiecutter.project_slug }}.users.models import User
+from {{ cookiecutter.project_slug }}.users.validators import CfValidator
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -21,48 +21,38 @@ class UserSerializer(serializers.ModelSerializer):
         """Metadata for serializer."""
 
         model = User
-        fields = (
+        fields = [
             'id',
-            'username',
-            'email',
-            'password',
             'name',
             'first_name',
             'last_name',
             'cf',
             'is_privacy_accepted',
-            'is_email_validated',
+            'privacy_accepted_datetime',
+            'is_terms_and_conditions_accepted',
+            'terms_and_conditions_accepted_datetime',
+            'is_marketing_accepted',
+            'marketing_accepted_datetime',
             'is_staff',
-        )
-        read_only_fields = ('is_email_validated', )
+        ]
+        read_only_fields = [
+            'reference_code',
+            'privacy_accepted_datetime',
+            'terms_and_conditions_accepted_datetime',
+            'marketing_accepted_datetime',
+        ]
         extra_kwargs = {
             'id': {'read_only': True},
-            'password': {'write_only': True},
+            'cf': {
+                'validators': [
+                    CfValidator(),
+                    UniqueValidator(queryset=User.objects.all()),
+                ],
+            },
         }
 
     def validate(self, data_sent):
         """Check if the data sent are valid."""
-        cf = data_sent.get('cf', '').upper()
-        if len(cf) != 16:  # noqa: WPS432 - length of a standard cf
-            raise serializers.ValidationError({
-                'cf': ['Not valid cf. It should have 16 characters.'],
-            })
-        if re.match(r'[A-Z]{6}\d{2}[A-Z]\d{2}[A-Z]\d{3}[A-Z]', cf) is None:
-            raise serializers.ValidationError({
-                'cf': ['Not valid cf'],
-            })
-        try:
-            ssn_validation(cf)
-        except ValueError:
-            raise serializers.ValidationError({
-                'cf': ['Not valid cf'],
-            })
-
-        if User.objects.filter(cf=cf).exists():
-            raise serializers.ValidationError({
-                'cf': ['User with this cf already exists.'],
-            })
-
         user = self.context['request'].user
         if data_sent.get('is_staff', False) and (not user.is_staff):
             raise serializers.ValidationError({
@@ -74,25 +64,19 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self, validated_data):
         """Override creation."""
         valid_data = validated_data.copy()
-        return User.objects.create_user(**valid_data)
+        return User.objects.create_user(**valid_data, is_active=False)
 
 
-login_fields = {'username', 'password'}
-unmutable_fields = login_fields | {'email'}
-
-
-class UserUpdateSerializer(serializers.ModelSerializer):
-    """Serializer for user update."""
+class UserDetailSerializer(UserSerializer):
+    """Serializer for user details."""
 
     class Meta:
-        """Metadata for UserSerializer."""
+        """Metadata for serializer."""
 
         model = UserSerializer.Meta.model
-        fields = [fd for fd in UserSerializer.Meta.fields if fd not in unmutable_fields]
+        fields = UserSerializer.Meta.fields
         read_only_fields = UserSerializer.Meta.read_only_fields
-        extra_kwargs = {
-            key: vl for key, vl in UserSerializer.Meta.extra_kwargs.items() if key not in unmutable_fields
-        }
+        extra_kwargs = UserSerializer.Meta.extra_kwargs
 
 
 class UserRegistrationSerializer(UserSerializer):
@@ -102,47 +86,36 @@ class UserRegistrationSerializer(UserSerializer):
         """Metadata for UserRegistrationSerializer."""
 
         model = UserSerializer.Meta.model
-        fields = UserSerializer.Meta.fields + (
-            'access', 'refresh', 'access_token_expiring_time', 'refresh_token_expiring_time',
-        )
-        read_only_fields = UserSerializer.Meta.read_only_fields + (
-            'access', 'refresh', 'access_token_expiring_time', 'refresh_token_expiring_time',
-        )
+        fields = UserSerializer.Meta.fields + [
+            'username',
+            'email',
+            'password',
+        ]
+        read_only_fields = UserSerializer.Meta.read_only_fields
         extra_kwargs = {
             **UserSerializer.Meta.extra_kwargs,  # type: ignore
-            'access': {
-                'source': 'get_jwt_access_token',
-                'help_text': 'JWT access token',
-            },
-            'refresh': {
-                'source': 'get_jwt_refresh_token',
-                'help_text': 'JWT refresh token',
-            },
-            'access_token_expiring_time': {
-                'source': 'get_jwt_access_token_expiring_time',
-                'help_text': 'JWT access token expiring time',
-            },
-            'refresh_token_expiring_time': {
-                'source': 'get_jwt_refresh_token_expiring_time',
-                'help_text': 'JWT refresh token expiring time',
-            },
+            'password': {'write_only': True},
         }
 
+    def validate(self, data_sent):
+        """Check if the data sent are valid."""
+        now = timezone.now()
+        if not data_sent.get('is_privacy_accepted', False):
+            raise serializers.ValidationError({
+                'is_privacy_accepted': ['Privacy should be accepted'],
+            })
+        data_sent['privacy_accepted_datetime'] = now
 
-class UserLoginSerializer(UserRegistrationSerializer):
-    """Serializer for user login."""
+        if not data_sent.get('is_terms_and_conditions_accepted', False):
+            raise serializers.ValidationError({
+                'is_terms_and_conditions_accepted': ['Terms and conditions should be accepted'],
+            })
+        data_sent['terms_and_conditions_accepted_datetime'] = now
 
-    class Meta:
-        """Metadata for UserLoginSerializer."""
+        if data_sent.get('is_marketing_accepted', False):
+            data_sent['marketing_accepted_datetime'] = now
 
-        model = UserRegistrationSerializer.Meta.model
-        fields = UserRegistrationSerializer.Meta.fields
-        read_only_fields = [
-            fd for fd in UserRegistrationSerializer.Meta.fields if fd not in login_fields
-        ]
-        extra_kwargs = {
-            key: vl for key, vl in UserRegistrationSerializer.Meta.extra_kwargs.items() if key not in login_fields
-        }
+        return super().validate(data_sent)
 
 
 class LogoutSerializer(serializers.Serializer):
@@ -171,15 +144,3 @@ class LogoutSerializer(serializers.Serializer):
     def save(self):
         """Put in blacklist the refresh token."""
         RefreshToken(self.validated_data['refresh']).blacklist()
-
-
-class RefreshResponseSerializer(serializers.Serializer):
-    """Serializer used only in refresh documentation."""
-
-    access = serializers.CharField(help_text='Access token, to be passed in JWT header auth.')
-
-
-class LoginResponseSerializer(RefreshResponseSerializer):
-    """Serializer used only in login documentation."""
-
-    refresh = serializers.CharField(help_text='Refresh token, used to obtain a new access token when it is expired.')

@@ -13,9 +13,9 @@ class TestLoginCase(UsersBaseTest):
     def setUp(self):
         """Reverse used urls."""
         super().setUp()
-        self.login_url = reverse('users:login')
-        self.refresh_token_url = reverse('users:token_refresh')
-        self.my_profile_url = reverse('users:user-detail', kwargs={'pk': 'me'})
+        self.login_url = reverse('users:jwt-create')
+        self.refresh_token_url = reverse('users:jwt-refresh')
+        self.my_profile_url = reverse('users:user-me')
 
     def test_login_return_code_200(self):
         """Test return code for login."""

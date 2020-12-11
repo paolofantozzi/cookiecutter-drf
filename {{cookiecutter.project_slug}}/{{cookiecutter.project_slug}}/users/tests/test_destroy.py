@@ -13,7 +13,7 @@ class TestDestroyCase(UsersBaseTest):
 
     def destroy_url(self, pk):
         """Return the destroy url for a user primary key."""
-        return reverse('users:user-detail', kwargs={'pk': pk})
+        return reverse('users:user-detail', args=[pk])
 
     def test_not_authenticated_401(self):
         """Test return code for delete not authenticated."""
@@ -22,17 +22,20 @@ class TestDestroyCase(UsersBaseTest):
         self.assertEqual(req.status_code, 401, body)
         self.assertEqual(body['code'], 'not_authenticated', body)
 
-    def test_not_found_for_other_user_if_not_staff_404(self):
+    def test_not_permitted_for_other_user_if_not_staff_403(self):
         """Test not found in access to other user if it is not staff."""
         self.client.force_authenticate(self.user)
         req = self.client.delete(self.destroy_url(self.staff_user.id))
         body = req.json()
-        self.assertEqual(req.status_code, 404, body)
+        self.assertEqual(req.status_code, 403, body)
 
     def test_access_to_other_user_if_staff_204(self):
         """Test access 200 to other user if it is staff."""
         self.client.force_authenticate(self.staff_user)
-        req = self.client.delete(self.destroy_url(self.user.id))
+        req = self.client.delete(
+            self.destroy_url(self.user.id),
+            data={'current_password': self.staff_login_post_data['password']},
+        )
         self.assertEqual(req.status_code, 204, req)
         user_on_db = User.objects.get(pk=self.user.id)
         self.assertFalse(user_on_db.is_active, req)

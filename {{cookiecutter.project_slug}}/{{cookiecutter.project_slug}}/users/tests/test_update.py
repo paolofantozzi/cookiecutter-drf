@@ -20,7 +20,7 @@ class TestUpdateCase(UsersBaseTest):
 
     def update_url(self, pk):
         """Return the retrieve url for a user primary key."""
-        return reverse('users:user-detail', kwargs={'pk': pk})
+        return reverse('users:user-detail', args=[pk])
 
     def test_not_authenticated_401(self):
         """Test return code for update not authenticated."""

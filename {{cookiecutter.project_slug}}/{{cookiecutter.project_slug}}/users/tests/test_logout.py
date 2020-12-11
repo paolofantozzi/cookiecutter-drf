@@ -23,9 +23,9 @@ class TestLogoutCase(UsersBaseTest):
     def setUp(self):
         """Reverse used urls."""
         super().setUp()
-        self.login_url = reverse('users:login')
-        self.refresh_token_url = reverse('users:token_refresh')
-        self.logout_url = reverse('users:logout')
+        self.login_url = reverse('users:jwt-create')
+        self.refresh_token_url = reverse('users:jwt-refresh')
+        self.logout_url = reverse('users:jwt-logout')
 
     def test_logout_need_authentication(self):
         """Test logout needs to be authenticated."""

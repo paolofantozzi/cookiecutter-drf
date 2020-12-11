@@ -338,6 +338,7 @@ def remove_api_only_starter_files():
     os.remove(os.path.join("config", "utils.py"))
     os.remove(os.path.join(base_dir, "users", "permissions.py"))
     os.remove(os.path.join(base_dir, "users", "serializers.py"))
+    os.remove(os.path.join(base_dir, "users", "validators.py"))
     test_files = (
         "create",
         "destroy",

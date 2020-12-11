@@ -15,14 +15,8 @@ class TestCreateCase(UsersBaseTest):
         super().setUp()
         self.user_create_url = reverse('users:user-list')
         self.create_data = self.generate_valid_user_data()
-        self.read_only_fields = [
-            'id',
-            'is_email_validated',
-            'access',
-            'refresh',
-            'access_token_expiring_time',
-            'refresh_token_expiring_time',
-        ]
+        self.create_data['is_privacy_accepted'] = True
+        self.create_data['is_terms_and_conditions_accepted'] = True
 
     def test_create_201(self):
         """Test return code for create."""
@@ -32,10 +26,7 @@ class TestCreateCase(UsersBaseTest):
         for field, field_value in self.create_data.items():
             if field == 'password':
                 continue
-            self.assertEqual(body[field], field_value.strip(), body)
-
-        for read_only_field in self.read_only_fields:
-            self.assertIn(read_only_field, body, body)
+            self.assertEqual(body[field], field_value, body)
 
     def test_create_staff_by_non_staff_error_400(self):
         """Test error for create a staff user if self is not staff."""
