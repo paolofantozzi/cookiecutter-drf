@@ -83,6 +83,7 @@ THIRD_PARTY_APPS = [
 {%- endif %}
 {%- if cookiecutter.use_drf == "y" %}
     "rest_framework",
+    "corsheaders",
 {%- endif %}
 {%- if cookiecutter.api_only_mode == 'y' %}
     'rest_framework_simplejwt',
@@ -90,7 +91,6 @@ THIRD_PARTY_APPS = [
     'drf_spectacular',
 {%- else %}
     "rest_framework.authtoken",
-    "corsheaders",
 {%- endif %}
 ]
 
