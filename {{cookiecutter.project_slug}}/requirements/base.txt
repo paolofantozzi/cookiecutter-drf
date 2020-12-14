@@ -25,7 +25,7 @@ flower==0.9.5  # https://github.com/mher/flower
 {%- endif %}
 {%- endif %}
 {%- if cookiecutter.use_async == 'y' %}
-uvicorn[standard]==0.12.3  # https://github.com/encode/uvicorn
+uvicorn[standard]==0.13.1  # https://github.com/encode/uvicorn
 {%- endif %}
 {%- if cookiecutter.use_whitenoise == 'n' %}
 Collectfast==2.2.0  # https://github.com/antonagestam/collectfast
@@ -47,7 +47,7 @@ django-redis==4.12.1  # https://github.com/jazzband/django-redis
 {%- if cookiecutter.use_drf == "y" %}
 # Django REST Framework
 djangorestframework==3.12.2  # https://github.com/encode/django-rest-framework
-django-cors-headers==3.5.0 # https://github.com/adamchainz/django-cors-headers
+django-cors-headers==3.6.0 # https://github.com/adamchainz/django-cors-headers
 {%- endif %}
 {%- if cookiecutter.api_only_mode == "y" %}
 djangorestframework-simplejwt==4.6.0  # https://github.com/SimpleJWT/django-rest-framework-simplejwt
