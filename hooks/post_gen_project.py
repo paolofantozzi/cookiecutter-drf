@@ -336,6 +336,8 @@ def remove_template_files():
 def remove_api_only_starter_files():
     base_dir = "{{cookiecutter.project_slug}}"
     os.remove(os.path.join("config", "utils.py"))
+    os.remove(os.path.join(base_dir, "users", "backends.py"))
+    os.remove(os.path.join(base_dir, "users", "exceptions.py"))
     os.remove(os.path.join(base_dir, "users", "permissions.py"))
     os.remove(os.path.join(base_dir, "users", "serializers.py"))
     os.remove(os.path.join(base_dir, "users", "validators.py"))

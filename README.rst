@@ -33,8 +33,12 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
 - Added migrations generation script from default project :code:`tests/generate_migrations.sh`. Migrations will be located in :code:`.cache/docker/my_awesome_project`
 - User model new fields:
 
-  - privacy accepted
-  - email validated
+  - is_privacy_accepted (for GDPR compliance)
+  - privacy_accepted_datetime (for GDPR compliance)
+  - is_terms_and_conditions_accepted (for GDPR compliance)
+  - terms_and_conditions_accepted_datetime (for GDPR compliance)
+  - is_marketing_accepted (for GDPR compliance)
+  - marketing_accepted_datetime (for GDPR compliance)
   - codice fiscale (italian social security number)
 
 - Added migration with default super user:
@@ -47,10 +51,14 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - Activated by default (together with drf)
   - Assume a different external system in traefik for frontend
   - Assume the entry point in traefik in /api
-  - CORS allow all default in local
+  - CORS allow all default
+  - Accept any host in local
   - JWT as default authentication
   - Swagger automatically visualized for each API
   - JWT token methods in model
+  - Djoser auth system integrated to manage user activation, change password, etc.
+  - Different error code in 401 response for inactive user
+  - Deactivate instead of delete a user
 
 Following the original README.
 

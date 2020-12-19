@@ -10,6 +10,7 @@ from rest_framework import permissions
 from rest_framework import status
 from rest_framework.generics import GenericAPIView
 from rest_framework.response import Response
+from rest_framework_simplejwt.views import TokenObtainPairView
 {%- else %}
 
 from django.contrib import messages
@@ -25,6 +26,7 @@ from django.views.generic import UpdateView
 from {{ cookiecutter.project_slug }}.users.models import User
 {%- else %}
 
+from {{ cookiecutter.project_slug }}.users.serializers import LoginSerializer
 from {{ cookiecutter.project_slug }}.users.serializers import LogoutSerializer
 {%- endif %}
 
@@ -102,4 +104,10 @@ class LogoutView(GenericAPIView):
         serializer.is_valid(raise_exception=True)
         serializer.save()
         return Response({'detail': 'Refresh token invalidated.'}, status=status.HTTP_200_OK)
+
+
+class LoginView(TokenObtainPairView):
+    """Change serializer."""
+
+    serializer_class = LoginSerializer
 {%- endif %}

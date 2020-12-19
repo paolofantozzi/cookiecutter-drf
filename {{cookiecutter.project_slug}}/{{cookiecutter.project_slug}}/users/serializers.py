@@ -5,8 +5,10 @@
 from django.utils import timezone
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenObtainSerializer
 from rest_framework_simplejwt.tokens import RefreshToken
 from rest_framework_simplejwt.tokens import TokenError
+from rest_framework_simplejwt.utils import datetime_from_epoch
 
 from {{ cookiecutter.project_slug }}.users.models import User
 from {{ cookiecutter.project_slug }}.users.validators import CfValidator
@@ -144,3 +146,47 @@ class LogoutSerializer(serializers.Serializer):
     def save(self):
         """Put in blacklist the refresh token."""
         RefreshToken(self.validated_data['refresh']).blacklist()
+
+
+class LoginSerializer(TokenObtainSerializer):
+    """Serializer to return also user and tokens expirings with tokens."""
+
+    user = UserSerializer(read_only=True)
+    refresh_exp = serializers.DateTimeField(read_only=True)
+    access_exp = serializers.DateTimeField(read_only=True)
+
+    @classmethod
+    def get_token(cls, user):
+        """Create a new pair of tokens for the user."""
+        return RefreshToken.for_user(user)
+
+    @classmethod
+    def exp_in_localtime(cls, exp):
+        """Return the expiration in the current timezone."""
+        return timezone.localtime(datetime_from_epoch(exp))
+
+    def validate(self, attrs):
+        """Add user and expirings times to data."""
+        valid_data = super().validate(attrs)
+
+        refresh = self.get_token(self.user)
+        valid_data['refresh'] = str(refresh)
+        valid_data['refresh_exp'] = self.exp_in_localtime(refresh.payload['exp'])
+
+        access = refresh.access_token
+        valid_data['access'] = str(access)
+        valid_data['access_exp'] = self.exp_in_localtime(access.payload['exp'])
+
+        valid_data['user'] = UserSerializer(instance=self.user).data
+
+        return valid_data
+
+    class Meta:
+        """Meta for serializer."""
+
+        read_only_fields = ['access', 'refresh', 'access_exp', 'refresh_exp', 'user']
+        extra_kwargs = {
+            'email': {'write_only': True},
+            'username': {'write_only': True},
+            'password': {'write_only': True},
+        }

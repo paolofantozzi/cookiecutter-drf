@@ -111,7 +111,11 @@ MIGRATION_MODULES = {"sites": "{{ cookiecutter.project_slug }}.contrib.sites.mig
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#authentication-backends
 AUTHENTICATION_BACKENDS = [
+    {%- if cookiecutter.api_only_mode == 'y' %}
+    "{{ cookiecutter.project_slug }}.users.backends.ModelBackendWithNotActiveException",
+    {%- else %}
     "django.contrib.auth.backends.ModelBackend",
+    {%- endif %}
     "allauth.account.auth_backends.AuthenticationBackend",
 ]
 # https://docs.djangoproject.com/en/dev/ref/settings/#auth-user-model
