@@ -4,10 +4,11 @@ Cookiecutter Django
 To use this template::
 
     $ pip install "cookiecutter>=1.7.0"
-    $ cookiecutter https://github.com/paolofantozzi/cookiecutter-django
+    $ cookiecutter https://github.com/paolofantozzi/cookiecutter-drf
 
 Forked from https://github.com/pydanny/cookiecutter-django with the following changes:
 
+- Localstack support in local to test AWS S3
 - Postgres not in production mode (we assume that in production the database is managed externally)
 - Support for Postgis
 - Traefik managed as separated docker-compose with network defined as external for services
@@ -59,6 +60,20 @@ Forked from https://github.com/pydanny/cookiecutter-django with the following ch
   - Djoser auth system integrated to manage user activation, change password, etc.
   - Different error code in 401 response for inactive user
   - Deactivate instead of delete a user
+
+Todo:
+
+  - move to api focused only
+  - move to docker only
+  - include celery post-transaction invoking of tasks
+  - add poetry for dependencies
+  - better organization of settings (maybe using https://github.com/sobolevn/django-split-settings)
+  - delete country-dependent elements (italian ssn)
+  - manage account deleting compliant to GDPR
+  - include (optional) timeout from last login to remove inactive users (also to be again GDPR compliant)
+  - write a decent documentation
+  - add structlog
+  - add logging to ELK (or EFK) support (also stack in local)
 
 Following the original README.
 
