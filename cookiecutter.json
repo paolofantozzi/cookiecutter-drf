@@ -18,6 +18,9 @@
   "use_pycharm": "n",
   "use_docker": "y",
   "postgresql_postgis_version": [
+    "14/14-3.3",
+    "13/13-3.3",
+    "12/12-3.3",
     "11.3/11-3.0",
     "10.8/10-3.0",
     "9.6/9.6-3.0",
@@ -32,6 +35,7 @@
   "cloud_provider": [
     "AWS",
     "GCP",
+    "Azure",
     "None"
   ],
   "mail_service": [
@@ -54,6 +58,12 @@
   "use_async": "n",
   "custom_bootstrap_compilation": "n",
   "use_compressor": "n",
+  "frontend_pipeline": [
+    "None",
+    "Django Compressor",
+    "Gulp",
+    "Webpack"
+  ],
   "use_celery": "n",
   "use_mailhog": "n",
   "use_sentry": "n",

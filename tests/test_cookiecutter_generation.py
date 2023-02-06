@@ -1,14 +1,24 @@
 import os
 import re
+import sys
 
 import pytest
-from cookiecutter.exceptions import FailedHookException
-import sh
+
+try:
+    import sh
+except (ImportError, ModuleNotFoundError):
+    sh = None  # sh doesn't support Windows
 import yaml
 from binaryornot.check import is_binary
+from cookiecutter.exceptions import FailedHookException
 
 PATTERN = r"{{(\s?cookiecutter)[.](.*?)}}"
 RE_OBJ = re.compile(PATTERN)
+
+if sys.platform.startswith("win"):
+    pytest.skip("sh doesn't support windows", allow_module_level=True)
+elif sys.platform.startswith("darwin") and os.getenv("CI"):
+    pytest.skip("skipping slow macOS tests on CI", allow_module_level=True)
 
 
 @pytest.fixture
@@ -48,6 +58,8 @@ SUPPORTED_COMBINATIONS = [
     {"cloud_provider": "AWS", "use_whitenoise": "n"},
     {"cloud_provider": "GCP", "use_whitenoise": "y"},
     {"cloud_provider": "GCP", "use_whitenoise": "n"},
+    {"cloud_provider": "Azure", "use_whitenoise": "y"},
+    {"cloud_provider": "Azure", "use_whitenoise": "n"},
     {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Mailgun"},
     {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Mailjet"},
     {"cloud_provider": "None", "use_whitenoise": "y", "mail_service": "Mandrill"},
@@ -74,7 +86,16 @@ SUPPORTED_COMBINATIONS = [
     {"cloud_provider": "GCP", "mail_service": "SendinBlue"},
     {"cloud_provider": "GCP", "mail_service": "SparkPost"},
     {"cloud_provider": "GCP", "mail_service": "Other SMTP"},
-    # Note: cloud_providers GCP and None with mail_service Amazon SES is not supported
+    {"cloud_provider": "Azure", "mail_service": "Mailgun"},
+    {"cloud_provider": "Azure", "mail_service": "Mailjet"},
+    {"cloud_provider": "Azure", "mail_service": "Mandrill"},
+    {"cloud_provider": "Azure", "mail_service": "Postmark"},
+    {"cloud_provider": "Azure", "mail_service": "Sendgrid"},
+    {"cloud_provider": "Azure", "mail_service": "SendinBlue"},
+    {"cloud_provider": "Azure", "mail_service": "SparkPost"},
+    {"cloud_provider": "Azure", "mail_service": "Other SMTP"},
+    # Note: cloud_providers GCP, Azure, and None
+    # with mail_service Amazon SES is not supported
     {"use_async": "y"},
     {"use_async": "n"},
     {"use_drf": "y"},
@@ -90,6 +111,10 @@ SUPPORTED_COMBINATIONS = [
     {"custom_bootstrap_compilation": "n"},
     {"use_compressor": "y"},
     {"use_compressor": "n"},
+    {"frontend_pipeline": "None"},
+    {"frontend_pipeline": "Django Compressor"},
+    {"frontend_pipeline": "Gulp"},
+    {"frontend_pipeline": "Webpack"},
     {"use_celery": "y"},
     {"use_celery": "n"},
     {"use_mailhog": "y"},
@@ -114,21 +139,22 @@ SUPPORTED_COMBINATIONS = [
 UNSUPPORTED_COMBINATIONS = [
     {"cloud_provider": "None", "use_whitenoise": "n"},
     {"cloud_provider": "GCP", "mail_service": "Amazon SES"},
+    {"cloud_provider": "Azure", "mail_service": "Amazon SES"},
     {"cloud_provider": "None", "mail_service": "Amazon SES"},
     {"use_drf": "n", "api_only_mode": "y"},
 ]
 
 
 def _fixture_id(ctx):
-    """Helper to get a user friendly test name from the parametrized context."""
+    """Helper to get a user-friendly test name from the parametrized context."""
     return "-".join(f"{key}:{value}" for key, value in ctx.items())
 
 
-def build_files_list(root_dir):
+def build_files_list(base_dir):
     """Build a list containing absolute paths to the generated files."""
     return [
         os.path.join(dirpath, file_path)
-        for dirpath, subdirs, files in os.walk(root_dir)
+        for dirpath, subdirs, files in os.walk(base_dir)
         for file_path in files
     ]
 
@@ -140,7 +166,7 @@ def check_paths(paths):
         if is_binary(path):
             continue
 
-        for line in open(path, "r"):
+        for line in open(path):
             match = RE_OBJ.search(line)
             assert match is None, f"cookiecutter variable not replaced in {path}"
 
@@ -152,10 +178,10 @@ def test_project_generation(cookies, context, context_override):
     result = cookies.bake(extra_context={**context, **context_override})
     assert result.exit_code == 0
     assert result.exception is None
-    assert result.project.basename == context["project_slug"]
-    assert result.project.isdir()
+    assert result.project_path.name == context["project_slug"]
+    assert result.project_path.is_dir()
 
-    paths = build_files_list(str(result.project))
+    paths = build_files_list(str(result.project_path))
     assert paths
     check_paths(paths)
 
@@ -166,7 +192,7 @@ def test_flake8_passes(cookies, context_override):
     result = cookies.bake(extra_context=context_override)
 
     try:
-        sh.flake8(_cwd=str(result.project))
+        sh.flake8(_cwd=str(result.project_path))
     except sh.ErrorReturnCode as e:
         pytest.fail(e.stdout.decode())
 
@@ -195,10 +221,10 @@ def test_travis_invokes_pytest(cookies, context, use_docker, expected_test_scrip
 
     assert result.exit_code == 0
     assert result.exception is None
-    assert result.project.basename == context["project_slug"]
-    assert result.project.isdir()
+    assert result.project_path.name == context["project_slug"]
+    assert result.project_path.is_dir()
 
-    with open(f"{result.project}/.travis.yml", "r") as travis_yml:
+    with open(f"{result.project_path}/.travis.yml") as travis_yml:
         try:
             yml = yaml.safe_load(travis_yml)["jobs"]["include"]
             assert yml[0]["script"] == ["flake8"]
@@ -222,10 +248,10 @@ def test_gitlab_invokes_flake8_and_pytest(
 
     assert result.exit_code == 0
     assert result.exception is None
-    assert result.project.basename == context["project_slug"]
-    assert result.project.isdir()
+    assert result.project_path.name == context["project_slug"]
+    assert result.project_path.is_dir()
 
-    with open(f"{result.project}/.gitlab-ci.yml", "r") as gitlab_yml:
+    with open(f"{result.project_path}/.gitlab-ci.yml") as gitlab_yml:
         try:
             gitlab_config = yaml.safe_load(gitlab_yml)
             assert gitlab_config["flake8"]["script"] == ["flake8"]
@@ -272,7 +298,7 @@ def test_gitlab_invokes_flake8_and_pytest(
 
 @pytest.mark.parametrize("slug", ["project slug", "Project_Slug"])
 def test_invalid_slug(cookies, context, slug):
-    """Invalid slug should failed pre-generation hook."""
+    """Invalid slug should fail pre-generation hook."""
     context.update({"project_slug": slug})
 
     result = cookies.bake(extra_context=context)
@@ -289,3 +315,20 @@ def test_error_if_incompatible(cookies, context, invalid_context):
 
     assert result.exit_code != 0
     assert isinstance(result.exception, FailedHookException)
+
+
+@pytest.mark.parametrize(
+    ["use_pycharm", "pycharm_docs_exist"],
+    [
+        ("n", False),
+        ("y", True),
+    ],
+)
+def test_pycharm_docs_removed(cookies, context, use_pycharm, pycharm_docs_exist):
+    """."""
+    context.update({"use_pycharm": use_pycharm})
+    result = cookies.bake(extra_context=context)
+
+    with open(f"{result.project_path}/docs/index.rst") as f:
+        has_pycharm_docs = "pycharm/configuration" in f.read()
+        assert has_pycharm_docs is pycharm_docs_exist
